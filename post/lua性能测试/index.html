@@ -1,0 +1,1043 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+
+    <title>Lua性能测试 | qpalzm811 blog</title>
+    <meta property="og:title" content="Lua性能测试 - qpalzm811 blog">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2022-08-19T04:17:41&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2022-08-19T04:17:41&#43;08:00'>
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="Lua性能测试">
+        
+    <meta name="author" content="qpalzm811 blog">
+    <meta property="og:url" content="http://www.flysnow.org/post/lua%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+    
+    
+    
+</head>
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://www.flysnow.org">
+                        qpalzm811 blog
+                    </a>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="http://www.flysnow.org">首页</a>
+                    
+                    <a  href="http://www.flysnow.org/books/" title="新书">新书</a>
+                    
+                    <a  href="http://www.flysnow.org/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://www.flysnow.org/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 200px;
+        margin-left: -210px;
+        padding: 5px 10px;
+        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+        font-size: 12px;
+        border: 1px solid rgba(0, 0, 0, .07);
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+        background-clip: padding-box;
+        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        word-wrap: break-word;
+        white-space: nowrap;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 20px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-lua和c-循环产生内存垃圾">1. Lua和C# 循环产生内存垃圾</a></li>
+    <li><a href="#2-monobehaviou的消耗">2. MonoBehaviou的消耗</a></li>
+    <li><a href="#3-lua字符串拼接消耗">3. Lua字符串拼接消耗</a></li>
+    <li><a href="#4-lua-表的2种初始化方式">4. Lua 表的2种初始化方式</a></li>
+    <li><a href="#5-lua性能优化技巧">5. Lua性能优化技巧</a></li>
+    <li><a href="#6-local变量定义位置的性能差异">6. Local变量定义位置的性能差异</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            var leftPos = $("#main").offset().left;
+            if (leftPos < 220) {
+                postToc.css({ "width": leftPos - 10, "margin-left": (0 - leftPos) })
+            }
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+
+        if ($("#TableOfContents").children().length < 1) {
+            $(".post-toc").remove();
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">Lua性能测试</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2022年8月19日
+        </date>
+        
+        
+        
+        <div class="clear" style="display: none">
+            <div class="toc-article">
+                <div class="toc-title">文章目录</div>
+            </div>
+        </div>
+        
+        <div class="post-content">
+            <h1 id="性能測試">性能測試</h1>
+<h2 id="1-lua和c-循环产生内存垃圾">1. Lua和C# 循环产生内存垃圾</h2>
+<ul>
+<li>
+<p>使用profiler查看循环产生内存垃圾对性能的影响（CPU Usage）</p>
+</li>
+<li>
+<p>Lua方面，使用toLua进行测试</p>
+</li>
+<li>
+<p>测试规则：</p>
+<ul>
+<li>
+<p>启动测试后，脚本会在每帧生成<!-- raw HTML omitted -->数量（初始为100个）的SpawnObj，该生成量每秒增加<!-- raw HTML omitted -->（默认为100个）个；测试共120次增量——时间大约为2分钟，最后一帧的生成量为12000</p>
+</li>
+<li>
+<p>C#</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C#" data-lang="C#"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UnitySpawnTest</span> : MonoBehaviour
+{
+    <span style="color:#66d9ef">bool</span> isStop = <span style="color:#66d9ef">true</span>;
+<span style="color:#a6e22e">    [SerializeField]</span> <span style="color:#66d9ef">int</span> currSpawnCntPerFrame = <span style="color:#ae81ff">0</span>;
+<span style="color:#a6e22e">    [SerializeField]</span> <span style="color:#66d9ef">int</span> spawnCntIncreaseVal = <span style="color:#ae81ff">1</span>; <span style="color:#75715e">//每幀new的數量   
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">    [SerializeField]</span> <span style="color:#66d9ef">int</span> stepUpConfig = <span style="color:#ae81ff">60</span>; <span style="color:#75715e">//多少次循環增加一次壓力
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">    [SerializeField]</span> <span style="color:#66d9ef">int</span> stepCounter = <span style="color:#ae81ff">0</span>; <span style="color:#75715e">//循環計數器    
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">    [SerializeField]</span> <span style="color:#66d9ef">int</span> limitStep = <span style="color:#ae81ff">120</span>; <span style="color:#75715e">//2分鐘後觀察
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">    [SerializeField]</span> <span style="color:#66d9ef">int</span> limitCounter = <span style="color:#ae81ff">0</span>;
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> Start()
+    {
+        currSpawnCntPerFrame = spawnCntIncreaseVal;
+        stepCounter = <span style="color:#ae81ff">0</span>;
+        StartCoroutine(<span style="color:#e6db74">&#34;CreatingGO&#34;</span>);
+    }
+
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> Update()
+    {
+        <span style="color:#66d9ef">if</span> (Input.GetKeyDown(KeyCode.S))
+        {
+            isStop = !isStop;
+            <span style="color:#66d9ef">if</span> (isStop)
+            {
+                stepCounter = <span style="color:#ae81ff">0</span>;
+                currSpawnCntPerFrame = spawnCntIncreaseVal;
+            }
+        }
+    }
+
+    IEnumerator CreatingGO()
+    {
+        <span style="color:#66d9ef">while</span>(<span style="color:#66d9ef">true</span>)
+        {
+            Debug.Log(<span style="color:#e6db74">&#34;IEnumerator Activated !&#34;</span>);
+            <span style="color:#66d9ef">if</span> (!isStop)
+            {
+                <span style="color:#66d9ef">if</span>(stepCounter &gt;= stepUpConfig)
+                {
+                    Debug.Log(<span style="color:#e6db74">&#34;Step Up !&#34;</span>);
+
+                    <span style="color:#66d9ef">if</span>(limitCounter &gt;= limitStep)
+                    {
+                        Debug.LogError(<span style="color:#e6db74">&#34;Test Finished.............&#34;</span>);
+                        isStop = <span style="color:#66d9ef">true</span>;
+                        <span style="color:#66d9ef">yield</span> <span style="color:#66d9ef">break</span>;
+                    }
+
+                    currSpawnCntPerFrame += spawnCntIncreaseVal;
+                    stepCounter = <span style="color:#ae81ff">0</span>;
+                }
+
+                Debug.Log(<span style="color:#e6db74">&#34;Spawning...&#34;</span>);
+                <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; currSpawnCntPerFrame; i++) { <span style="color:#66d9ef">new</span> SpawnObj(<span style="color:#e6db74">&#34;Spawned: &#34;</span> + i); }
+                stepCounter++;              
+                <span style="color:#66d9ef">yield</span> <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> WaitForEndOfFrame();
+            }
+            <span style="color:#66d9ef">yield</span> <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> WaitForEndOfFrame();
+        }
+    }
+}
+
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SpawnObj</span>
+{
+    <span style="color:#66d9ef">readonly</span> <span style="color:#66d9ef">string</span> m_Name;
+    <span style="color:#66d9ef">public</span> SpawnObj(<span style="color:#66d9ef">string</span> name) { m_Name = name; }
+}
+</code></pre></div></li>
+<li>
+<p>![CSharpGC_test](/Program Basic QA\ScreenShot\CSharpGC_test.png)</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Lua</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C#" data-lang="C#"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">LuaSpawnTest</span> : MonoBehaviour
+{
+    LuaState lua = <span style="color:#66d9ef">null</span>;    
+<span style="color:#a6e22e">    [SerializeField]</span> <span style="color:#66d9ef">string</span> luaFile = <span style="color:#e6db74">&#34;Lua_Spawner&#34;</span>;
+    LuaFunction func;	
+    <span style="color:#75715e">//...
+</span><span style="color:#75715e"></span>
+    <span style="color:#75715e">// Use this for initialization
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">void</span> Start()
+    {        
+        lua = <span style="color:#66d9ef">new</span> LuaState();
+        lua.Start();
+
+        <span style="color:#66d9ef">string</span> sceneFile = Application.dataPath + <span style="color:#e6db74">&#34;/Lua&#34;</span>;
+        lua.AddSearchPath(sceneFile);        
+        lua.Require(luaFile);
+        func = lua.GetFunction(<span style="color:#e6db74">&#34;Spawner&#34;</span>);
+        <span style="color:#75715e">//...
+</span><span style="color:#75715e"></span>    }
+
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> Update() { <span style="color:#75715e">/*...*/</span> }
+    IEnumerator CreatingGO()
+    {
+        <span style="color:#66d9ef">while</span> (<span style="color:#66d9ef">true</span>)
+        {
+            <span style="color:#75715e">//...
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; currSpawnCntPerFrame; i++) { func.Call(); }
+            <span style="color:#75715e">//...
+</span><span style="color:#75715e"></span>        }
+    }
+}
+</code></pre></div></li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua"><span style="color:#75715e">--Lua_SpawnModule</span>
+Lua_SpawnObj <span style="color:#f92672">=</span> { name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span> }
+<span style="color:#66d9ef">local</span> mt <span style="color:#f92672">=</span>
+{
+__index <span style="color:#f92672">=</span> Lua_SpawnObj,
+    __call <span style="color:#f92672">=</span> <span style="color:#66d9ef">function</span>(self, initName) self.name <span style="color:#f92672">=</span> initName <span style="color:#66d9ef">end</span>
+}
+<span style="color:#66d9ef">function</span> <span style="color:#a6e22e">Lua_SpawnObj</span>:<span style="color:#a6e22e">new</span>(initName)
+    self <span style="color:#f92672">=</span> self <span style="color:#f92672">or</span> {}
+    setmetatable(self, mt)
+    self(initName)
+    <span style="color:#66d9ef">return</span> self
+<span style="color:#66d9ef">end</span>
+</code></pre></div></li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua"><span style="color:#75715e">--Lua_Spawner</span>
+require <span style="color:#e6db74">&#34;Lua_SpawnModule&#34;</span>
+<span style="color:#66d9ef">function</span> <span style="color:#a6e22e">Spawner</span>() Lua_SpawnObj:new(<span style="color:#e6db74">&#34;Tester&#34;</span>) <span style="color:#66d9ef">end</span>
+</code></pre></div></li>
+<li>
+<p>![LuaGC_test](/Program Basic QA\ScreenShot\LuaGC_test.png)</p>
+</li>
+</ul>
+</li>
+<li>
+<p>就垃圾回收的频率而言，Lua的性能较弱，从中段开始，垃圾回收频率约为30帧一次；而C#进行的循环生成造成的垃圾回收频率较优，两次垃圾回收之间隔了较长的时间。</p>
+</li>
+<li>
+<p>就FPS而言，C#性能能维持较高的FPS</p>
+</li>
+<li>
+<p>较GC Allocation per Frame而言，Lua的每帧GC分配约为C#的两倍</p>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="2-monobehaviou的消耗">2. MonoBehaviou的消耗</h2>
+<ul>
+<li>
+<p>每一个Monobehaviour都是通过反射来调用生命周期函数的（Awake, Update, LateUpdate&hellip;）。Monobehaviour会在游戏开始时首先得到所有写有生命周期函数的脚本，保存下来后再调用这些生命周期方法。</p>
+</li>
+<li>
+<p>因此，只要在Monobehaviour中声明了Update这样的生命周期函数，无论函数体裡是否有东西，该方法都会被执行，从对CPU造成一定的负荷</p>
+<ul>
+<li>
+<p>场景上带有Monobehaviour且带有各种生命周期（尤其是Update类）的脚本越多，CPU负荷越大，即使所有生命周期的方法体裡都没有内容</p>
+</li>
+<li>
+<p>以下是测试脚本</p>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c#" data-lang="c#"><span style="color:#66d9ef">using</span> System.Collections;
+<span style="color:#66d9ef">using</span> System.Collections.Generic;
+<span style="color:#66d9ef">using</span> UnityEngine;
+
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MonoBehaviourTest</span> : MonoBehaviour
+{
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> Awake(){ }
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> OnEnable(){ }
+    <span style="color:#66d9ef">void</span> Start(){ }
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> FixedUpdate(){ }
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> OnTriggerEnter(Collider other){ }
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> OnTriggerStay(Collider other){ }
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> OnTriggerExit(Collider other){ }
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> OnCollisionEnter(Collision collision){ }
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> OnCollisionStay(Collision collision){ }
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> OnCollisionExit(Collision collision){ }
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> OnMouseDown(){ }
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> OnMouseUp(){ }
+    <span style="color:#66d9ef">void</span> Update(){ }
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> LateUpdate(){ }
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> OnRenderImage(RenderTexture source, RenderTexture destination){ }
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> OnDisable(){ }
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> OnDestroy(){ }
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> OnApplicationQuit(){ }
+}
+</code></pre></div></li>
+<li>
+<p>场景上只有一个挂有该脚本的空物体时的CPU Usage</p>
+<ul>
+<li>![CPU_1](/Program Basic QA\ScreenShot\CPU_1.png)</li>
+</ul>
+</li>
+<li>
+<p>场景上有6000+个挂有该脚本的空物体时的CPU Usage</p>
+<ul>
+<li>![CPU_0](\Program Basic QA\ScreenShot\CPU_0.png)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="3-lua字符串拼接消耗">3. Lua字符串拼接消耗</h2>
+<ul>
+<li>
+<p>Lua字符串的拼接方法及运行时间测试</p>
+<ul>
+<li>
+<p>&ldquo;..&rdquo;</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua"><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">operatorConcat</span>()
+    <span style="color:#66d9ef">local</span> result <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>
+    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">100000</span> <span style="color:#66d9ef">do</span>
+        result <span style="color:#f92672">=</span> result <span style="color:#f92672">..</span> <span style="color:#e6db74">&#34;a&#34;</span>
+    <span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span>
+</code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>string.format</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua"><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">formatConcat</span>()
+	<span style="color:#66d9ef">local</span> result <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>
+	<span style="color:#66d9ef">for</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">100000</span> <span style="color:#66d9ef">do</span>
+		result <span style="color:#f92672">=</span> string.format(<span style="color:#e6db74">&#34;%s%s&#34;</span>, result, <span style="color:#e6db74">&#34;a&#34;</span>)
+	<span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span>
+</code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>改用table.concat來拼接</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua"><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">tableConcat</span>()
+    <span style="color:#66d9ef">local</span> t <span style="color:#f92672">=</span> {}
+    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">100000</span> <span style="color:#66d9ef">do</span>
+        table.insert(t,<span style="color:#e6db74">&#34;a&#34;</span>)
+    <span style="color:#66d9ef">end</span>
+    table.concat(t)
+<span style="color:#66d9ef">end</span>
+</code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>各运行5次并计时(/sec)</p>
+<ul>
+<li>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>1st</th>
+<th>2nd</th>
+<th>3rd</th>
+<th>4th</th>
+<th>5th</th>
+<th>Avg.</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&ldquo;..&rdquo;</td>
+<td>0.48</td>
+<td>0.433</td>
+<td>0.397</td>
+<td>0.399</td>
+<td>0.406</td>
+<td>0.423</td>
+</tr>
+<tr>
+<td>string.format</td>
+<td>0.433</td>
+<td>0.471</td>
+<td>0.476</td>
+<td>0.466</td>
+<td>0.463</td>
+<td>0.4618</td>
+</tr>
+<tr>
+<td>table.concat</td>
+<td>0.011</td>
+<td>0.013</td>
+<td>0.013</td>
+<td>0.013</td>
+<td>0.013</td>
+<td>0.0126</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>table.conat &gt; .. &gt; string.format</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="4-lua-表的2种初始化方式">4. Lua 表的2种初始化方式</h2>
+<ol>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Lua" data-lang="Lua"><span style="color:#66d9ef">for</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1000000</span> <span style="color:#66d9ef">do</span>
+    <span style="color:#66d9ef">local</span> a <span style="color:#f92672">=</span> {}　
+    a[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+    a[<span style="color:#ae81ff">2</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>;
+    a[<span style="color:#ae81ff">3</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>
+<span style="color:#66d9ef">end</span>
+</code></pre></div></li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua"><span style="color:#66d9ef">for</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1000000</span> <span style="color:#66d9ef">do</span>
+    <span style="color:#66d9ef">local</span> a <span style="color:#f92672">=</span> {<span style="color:#66d9ef">true</span>, <span style="color:#66d9ef">true</span>, <span style="color:#66d9ef">true</span>}
+    a[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>; 
+    a[<span style="color:#ae81ff">2</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>; 
+    a[<span style="color:#ae81ff">3</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>
+<span style="color:#66d9ef">end</span>
+</code></pre></div></li>
+</ol>
+<ul>
+<li>
+<p>第二种性能高，每次循环固定申请长度为3的数组，并进行赋值；第一种每次循环都先生成一个容量为0的数组，然后对该数组尝试赋值，会导致该数组发生Resize。而Resize会使数组先在内存中分配一个新的长度的数组（除第一个元素外，之后都每次遇到数组爆满时，数组容量成倍增加），然后将所有记录再哈希一遍，将原来记录转移到新数组中。</p>
+<ul>
+<li>a[1] = 1时，数组容量扩展为1</li>
+<li>a[2] = 2时，数组容量扩展为1 * 2 = 2</li>
+<li>a[3] = 3时，数组容量扩展为2 * 2 = 4</li>
+</ul>
+</li>
+<li>
+<p>具体时间差（以下面的代码运行5次的结果平均时间差）：</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua"><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">NonDefinedLengthArr</span>()
+    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1000000</span> <span style="color:#66d9ef">do</span>
+        <span style="color:#66d9ef">if</span> i <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span> <span style="color:#66d9ef">then</span>
+            begin_nd <span style="color:#f92672">=</span> os.clock()
+        <span style="color:#66d9ef">end</span>
+
+        <span style="color:#66d9ef">local</span> a <span style="color:#f92672">=</span> {}
+        a[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+        a[<span style="color:#ae81ff">2</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>
+        a[<span style="color:#ae81ff">3</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>
+
+        <span style="color:#66d9ef">if</span> i <span style="color:#f92672">==</span> <span style="color:#ae81ff">1000000</span> <span style="color:#66d9ef">then</span>
+            print(string.format(<span style="color:#e6db74">&#34;nonDefine total time:%.2fms</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, ((os.clock() <span style="color:#f92672">-</span> begin_nd) <span style="color:#f92672">*</span> <span style="color:#ae81ff">1000</span>)))
+        <span style="color:#66d9ef">end</span>
+    <span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span>
+
+<span style="color:#66d9ef">function</span> <span style="color:#a6e22e">DefinedLengthArr</span>()
+    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1000000</span> <span style="color:#66d9ef">do</span>
+        <span style="color:#66d9ef">if</span> i <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span> <span style="color:#66d9ef">then</span>
+            begin_d <span style="color:#f92672">=</span> os.clock()
+        <span style="color:#66d9ef">end</span>
+
+        <span style="color:#66d9ef">local</span> a <span style="color:#f92672">=</span> {<span style="color:#66d9ef">true</span>, <span style="color:#66d9ef">true</span>, <span style="color:#66d9ef">true</span>}
+        a[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+        a[<span style="color:#ae81ff">2</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>
+        a[<span style="color:#ae81ff">3</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>
+
+        <span style="color:#66d9ef">if</span> i <span style="color:#f92672">==</span> <span style="color:#ae81ff">1000000</span> <span style="color:#66d9ef">then</span>
+            print(string.format(<span style="color:#e6db74">&#34;define total time:%.2fms</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, ((os.clock() <span style="color:#f92672">-</span> begin_d) <span style="color:#f92672">*</span> <span style="color:#ae81ff">1000</span>)))
+        <span style="color:#66d9ef">end</span>
+    <span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span>
+
+NonDefinedLengthArr() 
+DefinedLengthArr()
+</code></pre></div><ul>
+<li>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>1st</th>
+<th>2nd</th>
+<th>3rd</th>
+<th>4th</th>
+<th>5th</th>
+<th>Avg.</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NonDefined</td>
+<td>938ms</td>
+<td>783ms</td>
+<td>848ms</td>
+<td>808ms</td>
+<td>766ms</td>
+<td><strong>828.6</strong></td>
+</tr>
+<tr>
+<td>Defined</td>
+<td>432ms</td>
+<td>450ms</td>
+<td>454ms</td>
+<td>437ms</td>
+<td>409ms</td>
+<td><strong>436.4</strong></td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>第二种的运行时间比第一种的运行时平均快接近2倍</p>
+</li>
+</ul>
+</li>
+<li>
+<p>在内存占用上，分别在两个方法的最后一次遍历后使用（collectgarbage(&ldquo;count&rdquo;) * 1024）进行测试返回lua使用的总内存字节数。</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua">print(string.format(<span style="color:#e6db74">&#34;nonDefineMem:%.2f&#34;</span>, collectgarbage(<span style="color:#e6db74">&#34;count&#34;</span>) <span style="color:#f92672">*</span> <span style="color:#ae81ff">1024</span>))
+</code></pre></div></li>
+<li>
+<p>第一种返回33603.00字节</p>
+</li>
+<li>
+<p>第二种返回27056.00字节</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="5-lua性能优化技巧">5. Lua性能优化技巧</h2>
+<ol>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua"><span style="color:#66d9ef">for</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1000000</span> <span style="color:#66d9ef">do</span>　
+    <span style="color:#66d9ef">local</span> x <span style="color:#f92672">=</span> math.sin(i)
+<span style="color:#66d9ef">end</span>
+</code></pre></div></li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua"><span style="color:#66d9ef">local</span> sin <span style="color:#f92672">=</span> math.sin
+<span style="color:#66d9ef">for</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1000000</span> <span style="color:#66d9ef">do</span>　　
+    <span style="color:#66d9ef">local</span> x <span style="color:#f92672">=</span> sin(i)
+<span style="color:#66d9ef">end</span>
+</code></pre></div></li>
+</ol>
+<ul>
+<li>
+<p>测试代码</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Lua" data-lang="Lua"><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">Sin_In</span>()
+    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1000000</span> <span style="color:#66d9ef">do</span>
+        <span style="color:#66d9ef">if</span>(i <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>) <span style="color:#66d9ef">then</span>
+            begin_In <span style="color:#f92672">=</span> os.clock()
+        <span style="color:#66d9ef">end</span>
+
+        <span style="color:#66d9ef">local</span> x <span style="color:#f92672">=</span> math.sin(i)
+
+        <span style="color:#66d9ef">if</span>(i <span style="color:#f92672">==</span> <span style="color:#ae81ff">1000000</span>) <span style="color:#66d9ef">then</span>
+            print(string.format(<span style="color:#e6db74">&#34;Sin_In Time: %.2f ms</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, (os.clock() <span style="color:#f92672">-</span> begin_In) <span style="color:#f92672">*</span> <span style="color:#ae81ff">1000</span>))
+            print(string.format(<span style="color:#e6db74">&#34;Sin_In Mem: %.2f&#34;</span>, collectgarbage(<span style="color:#e6db74">&#34;count&#34;</span>) <span style="color:#f92672">*</span> <span style="color:#ae81ff">1024</span>))
+        <span style="color:#66d9ef">end</span>
+    <span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span>
+
+<span style="color:#66d9ef">local</span> sin <span style="color:#f92672">=</span> math.sin
+<span style="color:#66d9ef">function</span> <span style="color:#a6e22e">Sin_Out</span>()
+    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1000000</span> <span style="color:#66d9ef">do</span>
+        <span style="color:#66d9ef">if</span>(i <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>) <span style="color:#66d9ef">then</span>
+            begin_Out <span style="color:#f92672">=</span> os.clock()
+        <span style="color:#66d9ef">end</span>
+
+        <span style="color:#66d9ef">local</span> x <span style="color:#f92672">=</span> sin(i)
+
+        <span style="color:#66d9ef">if</span>(i <span style="color:#f92672">==</span> <span style="color:#ae81ff">1000000</span>) <span style="color:#66d9ef">then</span>
+            print(string.format(<span style="color:#e6db74">&#34;Sin_Out Time: %.2f ms</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, (os.clock() <span style="color:#f92672">-</span> begin_Out) <span style="color:#f92672">*</span> <span style="color:#ae81ff">1000</span>))
+            print(string.format(<span style="color:#e6db74">&#34;Sin_Out Mem: %.2f&#34;</span>, collectgarbage(<span style="color:#e6db74">&#34;count&#34;</span>) <span style="color:#f92672">*</span> <span style="color:#ae81ff">1024</span>))
+        <span style="color:#66d9ef">end</span>
+    <span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span>
+
+<span style="color:#66d9ef">for</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">5</span> <span style="color:#66d9ef">do</span>
+    print(<span style="color:#e6db74">&#34;Round: &#34;</span>, i)
+    Sin_In()
+    collectgarbage(<span style="color:#e6db74">&#34;restart&#34;</span>)
+    Sin_Out()
+    collectgarbage(<span style="color:#e6db74">&#34;restart&#34;</span>)
+    print(<span style="color:#e6db74">&#34;+++++++++++++++++&#34;</span>)
+<span style="color:#66d9ef">end</span>
+</code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>运行时间差异：</p>
+<ul>
+<li>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>1st</th>
+<th>2nd</th>
+<th>3rd</th>
+<th>4th</th>
+<th>5th</th>
+<th>Avg.</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sin_In</td>
+<td>88ms</td>
+<td>88ms</td>
+<td>91ms</td>
+<td>112ms</td>
+<td>93ms</td>
+<td><strong>94.4</strong></td>
+</tr>
+<tr>
+<td>Sin_Out</td>
+<td>77ms</td>
+<td>76ms</td>
+<td>73ms</td>
+<td>86ms</td>
+<td>77ms</td>
+<td><strong>77.8</strong></td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>在math.sin声明在函数外，且通过一个变量来调用的运行效率比在函数体裡每次循环调用math.sin函数的运行效率平均高1.2倍，主要是因为避免了方法的动态编译</p>
+</li>
+</ul>
+</li>
+<li>
+<p>内存佔用差异：</p>
+<ul>
+<li>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>1st</th>
+<th>2nd</th>
+<th>3rd</th>
+<th>4th</th>
+<th>5th</th>
+<th>Avg.</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sin_In</td>
+<td>26634</td>
+<td>24760</td>
+<td>24932</td>
+<td>25105</td>
+<td>25277</td>
+<td>25341.6</td>
+</tr>
+<tr>
+<td>Sin_Out</td>
+<td>26483</td>
+<td>24837</td>
+<td>25009</td>
+<td>25182</td>
+<td>24993</td>
+<td>25300.8</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>两种方法在使用的总内存数差异上并不明显</p>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="6-local变量定义位置的性能差异">6. Local变量定义位置的性能差异</h2>
+<ul>
+<li>
+<p>运行代码之前，Lua 会把源代码翻译（预编译）成一种内部格式，这种格式由一连串虚拟机的指令构成，与真实 CPU 的机器码很相似。接下来，这一内部格式交由 C 代码来解释，基本上就是一个 <code>while</code> 循环，里面有一个很大的 <code>switch</code>，一种指令对应一个 <code>case</code>。</p>
+</li>
+<li>
+<p>自 5.0 版起，Lua 使用了一个基于寄存器的虚拟机。这些「寄存器」跟 CPU 中真实的寄存器并无关联，因为这种关联既无可移植性，也受限于可用的寄存器数量。Lua 使用一个栈（由一个数组加上一些索引实现）来存放它的寄存器。</p>
+<ul>
+<li>
+<p>每个活动的（active）函数都有一份活动记录（activation record），活动记录占用栈的一小块，存放着这个函数对应的寄存器。</p>
+</li>
+<li>
+<p>因此，每个函数都有其自己的寄存器。由于每条指令只有 8 个 bit 用来指定寄存器，每个函数便可以使用多至 250 个寄存器。</p>
+</li>
+<li>
+<p>Lua 的寄存器如此之多，预编译时便能将所有的局部变量存到寄存器中。所以，在 Lua 中访问局部变量是很快的。举个例子， 如果<code>a</code> 和 <code>b</code> 是局部变量，语句<code>a = a + b</code> 只生成一条指令：<code>ADD 0 0 1</code>（假设 <code>a</code> 和 <code>b</code> 分别在寄存器 <code>0</code> 和 <code>1</code> 中）。</p>
+</li>
+<li>
+<p>对比之下，如果 a 和 b 是全局变量，生成上述加法运算的指令便会如下：</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C">GETGLOBAL    <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>     ; a
+GETGLOBAL    <span style="color:#ae81ff">1</span> <span style="color:#ae81ff">1</span>     ; b
+ADD          <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">1</span>
+SETGLOBAL    <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>     ; a
+</code></pre></div></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>測試</p>
+<ul>
+<li>
+<p>全局变量</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua">a <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+<span style="color:#66d9ef">function</span> <span style="color:#a6e22e">Global</span>()
+    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1000000</span> <span style="color:#66d9ef">do</span>
+        <span style="color:#66d9ef">if</span>(i <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>) <span style="color:#66d9ef">then</span>
+            timer <span style="color:#f92672">=</span> os.clock()
+        <span style="color:#66d9ef">end</span>
+
+        a <span style="color:#f92672">=</span> a <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
+
+        <span style="color:#66d9ef">if</span>(i <span style="color:#f92672">==</span> <span style="color:#ae81ff">1000000</span>) <span style="color:#66d9ef">then</span>
+            print(string.format(<span style="color:#e6db74">&#34;Global Time: %.2fms</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, (os.clock() <span style="color:#f92672">-</span> timer) <span style="color:#f92672">*</span> <span style="color:#ae81ff">1000</span>))
+        <span style="color:#66d9ef">end</span>
+    <span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span>
+Global()
+</code></pre></div></li>
+<li>
+<p>运行时间：35.00ms</p>
+</li>
+</ul>
+</li>
+<li>
+<p>外层局部变量</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua"><span style="color:#66d9ef">local</span> b <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+<span style="color:#66d9ef">function</span> <span style="color:#a6e22e">OutSideLocal</span>()
+    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1000000</span> <span style="color:#66d9ef">do</span>
+        <span style="color:#66d9ef">if</span>(i <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>) <span style="color:#66d9ef">then</span>
+            timer <span style="color:#f92672">=</span> os.clock()
+        <span style="color:#66d9ef">end</span>
+
+        b <span style="color:#f92672">=</span> b <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
+
+        <span style="color:#66d9ef">if</span>(i <span style="color:#f92672">==</span> <span style="color:#ae81ff">1000000</span>) <span style="color:#66d9ef">then</span>
+            print(string.format(<span style="color:#e6db74">&#34;OutSide Local Time: %.2fms</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, (os.clock() <span style="color:#f92672">-</span> timer) <span style="color:#f92672">*</span> <span style="color:#ae81ff">1000</span>))
+        <span style="color:#66d9ef">end</span>
+    <span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span>
+OutSideLocal()
+</code></pre></div></li>
+<li>
+<p>运行时间：27.00ms</p>
+</li>
+</ul>
+</li>
+<li>
+<p>内层局部变量</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua"><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">InsideLocal</span>()
+    <span style="color:#66d9ef">local</span> c <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1000000</span> <span style="color:#66d9ef">do</span>
+        <span style="color:#66d9ef">if</span>(i <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>) <span style="color:#66d9ef">then</span>
+            timer <span style="color:#f92672">=</span> os.clock()
+        <span style="color:#66d9ef">end</span>
+
+        c <span style="color:#f92672">=</span> c <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
+
+        <span style="color:#66d9ef">if</span>(i <span style="color:#f92672">==</span> <span style="color:#ae81ff">1000000</span>) <span style="color:#66d9ef">then</span>
+            print(string.format(<span style="color:#e6db74">&#34;Inside Local Time: %.2fms</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, (os.clock() <span style="color:#f92672">-</span> timer) <span style="color:#f92672">*</span> <span style="color:#ae81ff">1000</span>))
+        <span style="color:#66d9ef">end</span>
+    <span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span>
+</code></pre></div></li>
+<li>
+<p>运行时间：19.00ms</p>
+</li>
+</ul>
+</li>
+<li>
+<p>可见：函数内部的local变量访问的速度 &gt; 函数外部的local变量访问速度 &gt; 全局变量的访问速度</p>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+
+        
+
+
+        
+
+
+        <div class="post-meta meta-tags">
+            
+            没有标签
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+    
+    
+
+</div>
+
+                    <footer id="footer">
+    <div>
+        &copy; 2022 <a href="http://www.flysnow.org">qpalzm811 blog By qpalzm811 blog</a>
+        
+    </div>
+    <br />
+    <div>
+        <div class="github-badge">
+            <a href="https://gohugo.io/" target="_black" rel="nofollow"><span class="badge-subject">Powered by</span><span class="badge-value bg-blue">Hugo</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://www.flysnow.org/" target="_black"><span class="badge-subject">Design by</span><span class="badge-value bg-brightgreen">飞雪无情</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://github.com/flysnow-org/maupassant-hugo" target="_black"><span class="badge-subject">Theme</span><span class="badge-value bg-yellowgreen">Maupassant</span></a>
+        </div>
+    </div>
+</footer>
+
+
+    
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='//www.google.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://www.flysnow.org">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://www.flysnow.org/post/lua%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" title="Lua基础知识">Lua基础知识</a>
+    </li>
+    
+    <li>
+        <a href="http://www.flysnow.org/post/lua%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/" title="Lua性能测试">Lua性能测试</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
+<ul class="widget-list">
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
+<div class="tagcloud">
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">友情链接</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="http://yuedu.baidu.com/ebook/14a722970740be1e640e9a3e" title="Android Gradle权威指南">Android Gradle权威指南</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="http://mirrors.flysnow.org/" title="常用开发工具CDN镜像">常用开发工具CDN镜像</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://www.flysnow.org/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

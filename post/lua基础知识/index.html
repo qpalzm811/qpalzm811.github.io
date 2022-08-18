@@ -1,0 +1,1416 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+
+    <title>Lua基础知识 | qpalzm811 blog</title>
+    <meta property="og:title" content="Lua基础知识 - qpalzm811 blog">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2022-08-19T04:21:31&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2022-08-19T04:21:31&#43;08:00'>
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="Lua基础知识">
+        
+    <meta name="author" content="qpalzm811 blog">
+    <meta property="og:url" content="http://www.flysnow.org/post/lua%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+    
+    
+    
+</head>
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://www.flysnow.org">
+                        qpalzm811 blog
+                    </a>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="http://www.flysnow.org">首页</a>
+                    
+                    <a  href="http://www.flysnow.org/books/" title="新书">新书</a>
+                    
+                    <a  href="http://www.flysnow.org/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://www.flysnow.org/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 200px;
+        margin-left: -210px;
+        padding: 5px 10px;
+        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+        font-size: 12px;
+        border: 1px solid rgba(0, 0, 0, .07);
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+        background-clip: padding-box;
+        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        word-wrap: break-word;
+        white-space: nowrap;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 20px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            var leftPos = $("#main").offset().left;
+            if (leftPos < 220) {
+                postToc.css({ "width": leftPos - 10, "margin-left": (0 - leftPos) })
+            }
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+
+        if ($("#TableOfContents").children().length < 1) {
+            $(".post-toc").remove();
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">Lua基础知识</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2022年8月19日
+        </date>
+        
+        
+        
+        <div class="clear" style="display: none">
+            <div class="toc-article">
+                <div class="toc-title">文章目录</div>
+            </div>
+        </div>
+        
+        <div class="post-content">
+            <h4 id="lua基礎知識">Lua基礎知識</h4>
+<h5 id="1-lua的底层数据类型">1. Lua的底层数据类型</h5>
+<ul>
+<li>
+<p>常用的数据类型包括：</p>
+<ul>
+<li>nil</li>
+<li>boolean</li>
+<li>number</li>
+<li>string</li>
+<li>function</li>
+<li>userdata</li>
+<li>thread</li>
+<li>table</li>
+</ul>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#75715e">//Lua源碼中的數據類型宏定義
+</span><span style="color:#75715e">//file: lua.h
+</span><span style="color:#75715e"></span><span style="color:#75715e">/*
+</span><span style="color:#75715e">** basic types
+</span><span style="color:#75715e">*/</span>
+<span style="color:#75715e">#define LUA_TNONE		(-1)
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define LUA_TNIL		0
+</span><span style="color:#75715e">#define LUA_TBOOLEAN		1
+</span><span style="color:#75715e">#define LUA_TLIGHTUSERDATA	2
+</span><span style="color:#75715e">#define LUA_TNUMBER		3
+</span><span style="color:#75715e">#define LUA_TSTRING		4
+</span><span style="color:#75715e">#define LUA_TTABLE		5
+</span><span style="color:#75715e">#define LUA_TFUNCTION		6
+</span><span style="color:#75715e">#define LUA_TUSERDATA		7
+</span><span style="color:#75715e">#define LUA_TTHREAD		8
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define LUA_NUMTYPES		9
+</span></code></pre></div></li>
+<li>
+<p>当中没有被包括在常用类型的basic types为：</p>
+<ul>
+<li>None</li>
+<li>LightUserData</li>
+<li>NumTypes</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="2-table存储形式与resize">2. Table存储形式与Resize</h5>
+<ul>
+<li>
+<p>其他语言提供的所有结构&mdash;数组，记录，列表，队列，集合这些在lua中都用table来表示</p>
+</li>
+<li>
+<p>Lua的table是由数组部分（array part）和哈希部分（hash part）组成。</p>
+<ul>
+<li>数组部分索引的key是1~n的整数，当 key 为整数时，table 就可以当成数组来用。而且这个数组是一个索引从1开始，没有固定长度，可以根据需要自动增长的数组。</li>
+<li>哈希部分是一个哈希表（open address table），哈希表本质是一个数组，它利用哈希算法将键转化为数组下标，使Table可以当成字典来用。 它的 key 值可以是除了 nil 之外的任何类型的值。</li>
+</ul>
+</li>
+<li>
+<p>向table中插入数据时，如果已经满了，Lua会重新设置数组部分或哈希表的大小，容量是成倍增加的，哈希部分还要对哈希表中的数据进行整理。</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#75715e">//ltable.c
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">luaH_newKey</span>(lua_State <span style="color:#f92672">*</span>L, Table <span style="color:#f92672">*</span>t, <span style="color:#66d9ef">const</span> TValue <span style="color:#f92672">*</span>key, TValue <span style="color:#f92672">*</span>value)
+{
+    ...
+    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>isempty(gval(mp)) <span style="color:#f92672">||</span> isdummy(t)) {  <span style="color:#75715e">/* main position is taken? */</span>
+    Node <span style="color:#f92672">*</span>othern;
+    Node <span style="color:#f92672">*</span>f <span style="color:#f92672">=</span> getfreepos(t);  <span style="color:#75715e">/* get a free place */</span>
+    <span style="color:#66d9ef">if</span> (f <span style="color:#f92672">==</span> NULL) {  <span style="color:#75715e">/* cannot find a free place? */</span>
+      rehash(L, t, key);  <span style="color:#75715e">/* grow table */</span>
+      <span style="color:#75715e">/* whatever called &#39;newkey&#39; takes care of TM cache */</span>
+      luaH_set(L, t, key, value);  <span style="color:#75715e">/* insert key into grown table */</span>
+      <span style="color:#66d9ef">return</span>;
+    }
+    ...
+}
+</code></pre></div></li>
+<li>
+<p>rehash</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#75715e">//ltable.c
+</span><span style="color:#75715e"></span><span style="color:#75715e">/*
+</span><span style="color:#75715e">** nums[i] = number of keys &#39;k&#39; where 2^(i - 1) &lt; k &lt;= 2^i
+</span><span style="color:#75715e">*/</span>
+<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">rehash</span> (lua_State <span style="color:#f92672">*</span>L, Table <span style="color:#f92672">*</span>t, <span style="color:#66d9ef">const</span> TValue <span style="color:#f92672">*</span>ek) {
+  <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> asize;  <span style="color:#75715e">/* optimal size for array part */</span>
+  <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> na;  <span style="color:#75715e">/* number of keys in the array part */</span>
+  <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> nums[MAXABITS <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>];
+  <span style="color:#66d9ef">int</span> i;
+  <span style="color:#66d9ef">int</span> totaluse;
+  <span style="color:#66d9ef">for</span> (i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;=</span> MAXABITS; i<span style="color:#f92672">++</span>) nums[i] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;  <span style="color:#75715e">/* reset counts */</span>
+  setlimittosize(t);
+  na <span style="color:#f92672">=</span> numusearray(t, nums);  <span style="color:#75715e">/* count keys in array part */</span>
+  totaluse <span style="color:#f92672">=</span> na;  <span style="color:#75715e">/* all those keys are integer keys */</span>
+  totaluse <span style="color:#f92672">+=</span> numusehash(t, nums, <span style="color:#f92672">&amp;</span>na);  <span style="color:#75715e">/* count keys in hash part */</span>
+  <span style="color:#75715e">/* count extra key */</span>
+  <span style="color:#66d9ef">if</span> (ttisinteger(ek))
+    na <span style="color:#f92672">+=</span> countint(ivalue(ek), nums);
+  totaluse<span style="color:#f92672">++</span>;
+  <span style="color:#75715e">/* compute new size for array part */</span>
+  asize <span style="color:#f92672">=</span> computesizes(nums, <span style="color:#f92672">&amp;</span>na);
+  <span style="color:#75715e">/* resize the table to new computed sizes */</span>
+  luaH_resize(L, t, asize, totaluse <span style="color:#f92672">-</span> na);
+}
+</code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>resize</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">//ltable.c
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">luaH_resize</span> (lua_State <span style="color:#f92672">*</span>L, Table <span style="color:#f92672">*</span>t, <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> newasize,
+                                          <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> nhsize) {
+  <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> i;
+  Table newt;  <span style="color:#75715e">/* to keep the new hash part */</span>
+  <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> oldasize <span style="color:#f92672">=</span> setlimittosize(t);
+  TValue <span style="color:#f92672">*</span>newarray;
+  <span style="color:#75715e">/* create new hash part with appropriate size into &#39;newt&#39; */</span>
+  setnodevector(L, <span style="color:#f92672">&amp;</span>newt, nhsize);
+  <span style="color:#66d9ef">if</span> (newasize <span style="color:#f92672">&lt;</span> oldasize) {  <span style="color:#75715e">/* will array shrink? */</span>
+    t<span style="color:#f92672">-&gt;</span>alimit <span style="color:#f92672">=</span> newasize;  <span style="color:#75715e">/* pretend array has new size... */</span>
+    exchangehashpart(t, <span style="color:#f92672">&amp;</span>newt);  <span style="color:#75715e">/* and new hash */</span>
+    <span style="color:#75715e">/* re-insert into the new hash the elements from vanishing slice */</span>
+    <span style="color:#66d9ef">for</span> (i <span style="color:#f92672">=</span> newasize; i <span style="color:#f92672">&lt;</span> oldasize; i<span style="color:#f92672">++</span>) {
+      <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>isempty(<span style="color:#f92672">&amp;</span>t<span style="color:#f92672">-&gt;</span>array[i]))
+        luaH_setint(L, t, i <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>, <span style="color:#f92672">&amp;</span>t<span style="color:#f92672">-&gt;</span>array[i]);
+    }
+    t<span style="color:#f92672">-&gt;</span>alimit <span style="color:#f92672">=</span> oldasize;  <span style="color:#75715e">/* restore current size... */</span>
+    exchangehashpart(t, <span style="color:#f92672">&amp;</span>newt);  <span style="color:#75715e">/* and hash (in case of errors) */</span>
+  }
+  <span style="color:#75715e">/* allocate new array */</span>
+  newarray <span style="color:#f92672">=</span> luaM_reallocvector(L, t<span style="color:#f92672">-&gt;</span>array, oldasize, newasize, TValue);
+  <span style="color:#66d9ef">if</span> (l_unlikely(newarray <span style="color:#f92672">==</span> NULL <span style="color:#f92672">&amp;&amp;</span> newasize <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>)) {  <span style="color:#75715e">/* allocation failed? */</span>
+    freehash(L, <span style="color:#f92672">&amp;</span>newt);  <span style="color:#75715e">/* release new hash part */</span>
+    luaM_error(L);  <span style="color:#75715e">/* raise error (with array unchanged) */</span>
+  }
+  <span style="color:#75715e">/* allocation ok; initialize new part of the array */</span>
+  exchangehashpart(t, <span style="color:#f92672">&amp;</span>newt);  <span style="color:#75715e">/* &#39;t&#39; has the new hash (&#39;newt&#39; has the old) */</span>
+  t<span style="color:#f92672">-&gt;</span>array <span style="color:#f92672">=</span> newarray;  <span style="color:#75715e">/* set new array part */</span>
+  t<span style="color:#f92672">-&gt;</span>alimit <span style="color:#f92672">=</span> newasize;
+  <span style="color:#66d9ef">for</span> (i <span style="color:#f92672">=</span> oldasize; i <span style="color:#f92672">&lt;</span> newasize; i<span style="color:#f92672">++</span>)  <span style="color:#75715e">/* clear new slice of the array */</span>
+     setempty(<span style="color:#f92672">&amp;</span>t<span style="color:#f92672">-&gt;</span>array[i]);
+  <span style="color:#75715e">/* re-insert elements from old hash part into new parts */</span>
+  reinsert(L, <span style="color:#f92672">&amp;</span>newt, t);  <span style="color:#75715e">/* &#39;newt&#39; now has the old hash */</span>
+  freehash(L, <span style="color:#f92672">&amp;</span>newt);  <span style="color:#75715e">/* free old hash part */</span>
+}
+</code></pre></div></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>resize</strong>代价高昂，当我们把一个新键值赋给表时，若数组和哈希表已经满了，则会触发一个再哈希(rehash)。再哈希的代价是高昂的。首先会在内存中分配一个新的长度的数组，然后将所有记录再全部哈希一遍，将原来的记录转移到新数组中。新哈希表的长度是最接近于所有元素数目的2的乘方。</p>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-luA" data-lang="luA"><span style="color:#66d9ef">local</span> a <span style="color:#f92672">=</span> {}     <span style="color:#75715e">--容量为0</span>
+a[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>      <span style="color:#75715e">--重设数组部分的size为1</span>
+a[<span style="color:#ae81ff">2</span>] <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>      <span style="color:#75715e">--重设数组部分的size为2</span>
+a[<span style="color:#ae81ff">3</span>] <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>      <span style="color:#75715e">--重设数组部分的size为4</span>
+
+<span style="color:#66d9ef">local</span> b <span style="color:#f92672">=</span> {}     <span style="color:#75715e">--容量为0</span>
+b.x <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>       <span style="color:#75715e">--重设哈希部分的size为1</span>
+b.y <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>       <span style="color:#75715e">--重设哈希部分的size为2</span>
+b.z <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>       <span style="color:#75715e">--重设哈希部分的size为4</span>
+</code></pre></div></li>
+</ul>
+<hr>
+<h5 id="3-table-遍历">3. Table 遍历</h5>
+<ul>
+<li>
+<p>第一种：pairs迭代器</p>
+<ul>
+<li>
+<p>遍历键值对，但过程中元素的键顺序可能是随机的（键可以是非数字的元素，因此会对键进行哈希处理，导致键顺序不同），但每个元素确保只会出现一次</p>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua"><span style="color:#75715e">--pairs</span>
+t <span style="color:#f92672">=</span> {<span style="color:#ae81ff">10</span>, print, x <span style="color:#f92672">=</span> <span style="color:#ae81ff">12</span>, k <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;hi&#34;</span>, <span style="color:#ae81ff">80</span>, b <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;cc&#34;</span>, <span style="color:#ae81ff">999</span>, collectgarbage(<span style="color:#e6db74">&#34;count&#34;</span>)}
+<span style="color:#66d9ef">for</span> k, v <span style="color:#66d9ef">in</span> pairs(t) <span style="color:#66d9ef">do</span>
+	print(k, v)
+<span style="color:#66d9ef">end</span>
+</code></pre></div></li>
+<li>
+<p>但随机主要是在元素增删后发生（k &lt;-&gt; x）</p>
+<ul>
+<li>1	10
+2	function: 00D46B10
+k	hi
+x	12</li>
+<li>1	10
+2	function: 00B56DB0
+3	80
+4	999
+5	21.5947265625
+x	12
+k	hi
+b	cc</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>第二种：ipairs迭代器</p>
+<ul>
+<li>
+<p>遍历列表（键必然是数字），确保元素是顺序出现的</p>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua"><span style="color:#75715e">--ipairs</span>
+t <span style="color:#f92672">=</span> {<span style="color:#ae81ff">10</span>, print, <span style="color:#ae81ff">12</span>, <span style="color:#e6db74">&#34;hi&#34;</span>}
+<span style="color:#66d9ef">for</span> k, v <span style="color:#66d9ef">in</span> ipairs(t) <span style="color:#66d9ef">do</span>
+	print(k, v)
+<span style="color:#66d9ef">end</span>
+</code></pre></div></li>
+<li>
+<p>1	10
+2	function: 00C66A10
+3	12
+4	hi</p>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua"><span style="color:#75715e">--ipairs</span>
+t <span style="color:#f92672">=</span> {<span style="color:#ae81ff">10</span>, print, <span style="color:#ae81ff">12</span>, <span style="color:#e6db74">&#34;hi&#34;</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">9</span>, <span style="color:#e6db74">&#34;DD&#34;</span>}
+<span style="color:#66d9ef">for</span> k, v <span style="color:#66d9ef">in</span> ipairs(t) <span style="color:#66d9ef">do</span>
+	print(k, v)
+<span style="color:#66d9ef">end</span>
+</code></pre></div></li>
+<li>
+<p>1	10
+2	function: 009E6770
+3	12
+4	hi
+5	8
+6	9
+7	DD</p>
+</li>
+</ul>
+</li>
+<li>
+<p>第三种：数值型for循环</p>
+<ul>
+<li>
+<p>3.1：#&lt;集合名&gt;</p>
+<ul>
+<li>遍历n次（n = 集合长度）</li>
+</ul>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua"><span style="color:#75715e">--for #</span>
+t <span style="color:#f92672">=</span> {<span style="color:#ae81ff">10</span>, print, <span style="color:#ae81ff">12</span>, <span style="color:#66d9ef">nil</span>, <span style="color:#e6db74">&#34;hi&#34;</span>, a <span style="color:#f92672">=</span> <span style="color:#ae81ff">10</span>}
+<span style="color:#66d9ef">for</span> k <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>, <span style="color:#f92672">#</span>t <span style="color:#66d9ef">do</span>
+	print(t[k])
+<span style="color:#66d9ef">end</span>
+</code></pre></div></li>
+<li>
+<p>10
+function: 005D6C50
+12
+nil
+hi</p>
+</li>
+<li>
+<p>3.2：table.maxn(集合名)</p>
+<ul>
+<li>
+<p>遍历集合中键为整数的元素</p>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua">t <span style="color:#f92672">=</span> {<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">9</span>, b <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;DD&#34;</span>, <span style="color:#66d9ef">nil</span>, <span style="color:#e6db74">&#34;hi&#34;</span>, a <span style="color:#f92672">=</span> <span style="color:#ae81ff">10</span>} <span style="color:#75715e">--table.maxn(t) = 5</span>
+<span style="color:#66d9ef">for</span> k <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>, table.maxn(t) <span style="color:#66d9ef">do</span>
+	print(t[k])
+<span style="color:#66d9ef">end</span>
+</code></pre></div></li>
+<li>
+<p>2
+5
+9
+nil
+hi</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="4-项目使用的-class-机制">4. 项目使用的 class 机制</h5>
+<ul>
+<li>
+<p>项目中的class机制由class.lua脚本实现。该脚本被项目中的绝大多数脚本所继承。该脚本是lua实现OOP的基础，基类中的基类，使其他继承它的lua脚本具有类、继承的概念。</p>
+</li>
+<li>
+<p>该脚本大致分为以下几个部分：</p>
+<ol>
+<li>
+<p>在全局变量表中注册类表</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua"><span style="color:#75715e">--_G為全局變量表</span>
+<span style="color:#75715e">--把&#34;__class&#34;作為鍵注冊進去，值為一個table</span>
+<span style="color:#75715e">--類表</span>
+<span style="color:#66d9ef">if</span> _G[<span style="color:#e6db74">&#34;__class&#34;</span>] <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> <span style="color:#66d9ef">then</span>
+    _G[<span style="color:#e6db74">&#34;__class&#34;</span>] <span style="color:#f92672">=</span> {}
+<span style="color:#66d9ef">end</span>
+<span style="color:#75715e">--如果全局變量表中已有類表，則取類表，否則建一個空表</span>
+<span style="color:#75715e">--保存所有的類容器</span>
+<span style="color:#75715e">--鍵：類容器（包含了繼承關係和構造方法）；值：類的所有成員</span>
+<span style="color:#66d9ef">local</span> _class <span style="color:#f92672">=</span> _G[<span style="color:#e6db74">&#34;__class&#34;</span>] <span style="color:#f92672">or</span> {}
+</code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>类函数（function class(super)）</p>
+<ol>
+<li>
+<p>初始化</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua"><span style="color:#66d9ef">local</span> class_type<span style="color:#f92672">=</span>{} <span style="color:#75715e">--建一個空表作為類的容器</span>
+<span style="color:#75715e">--初始化類型的父類和構造方法</span>
+class_type.ctor<span style="color:#f92672">=</span><span style="color:#66d9ef">false</span>
+class_type.super<span style="color:#f92672">=</span>super
+</code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>new方法（function(self_class_type, &hellip;)）定义</p>
+<ol>
+<li>
+<p>创建「容器」，设置元表和__index</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua"><span style="color:#66d9ef">local</span> obj<span style="color:#f92672">=</span> {} <span style="color:#75715e">--創建一個對象容器</span>
+obj.__vt <span style="color:#f92672">=</span> _class[class_type] <span style="color:#75715e">--這個容器包含了類的成員表</span>
+<span style="color:#75715e">--把成員表設成自身的元表</span>
+<span style="color:#66d9ef">local</span> mt <span style="color:#f92672">=</span> {__index <span style="color:#f92672">=</span> obj.__vt} 
+setmetatable(obj, mt)
+</code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>设置继承关係</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua"><span style="color:#75715e">--保存當前類的父類</span>
+<span style="color:#66d9ef">local</span> typeSuper <span style="color:#f92672">=</span> self_class_type.super
+<span style="color:#75715e">--只要當前父類不為空，則一直循環</span>
+<span style="color:#66d9ef">while</span> typeSuper <span style="color:#f92672">~=</span> <span style="color:#66d9ef">nil</span> <span style="color:#66d9ef">do</span>
+    <span style="color:#66d9ef">local</span> typeSuperL <span style="color:#f92672">=</span> typeSuper
+    <span style="color:#75715e">--聲明父類對象容器</span>
+    <span style="color:#66d9ef">local</span> objSuper <span style="color:#f92672">=</span> {}
+    <span style="color:#75715e">--把對象容器中的父類設為該容器</span>
+    obj[typeSuper] <span style="color:#f92672">=</span> objSuper
+    <span style="color:#75715e">--為該容器設置元表，使得該容器被訪問時，會調用以下方法，保存被繼承的方法</span>
+    setmetatable(objSuper, {__index<span style="color:#f92672">=</span>
+            <span style="color:#66d9ef">function</span>(t,k)
+                <span style="color:#75715e">--得到父類的繼承方法</span>
+                <span style="color:#66d9ef">local</span> ret<span style="color:#f92672">=</span>_class[typeSuperL][k]
+                <span style="color:#66d9ef">if</span> type(ret) <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;function&#34;</span> <span style="color:#66d9ef">then</span>
+                    <span style="color:#66d9ef">local</span> func <span style="color:#f92672">=</span> ret
+                    ret <span style="color:#f92672">=</span> <span style="color:#66d9ef">function</span>(self1, ...)
+                        <span style="color:#66d9ef">return</span> func(obj, ...)
+                    <span style="color:#66d9ef">end</span>
+                    <span style="color:#75715e">--保存下來</span>
+                    t[k] <span style="color:#f92672">=</span> ret
+                <span style="color:#66d9ef">else</span>
+                    ret <span style="color:#f92672">=</span> <span style="color:#66d9ef">nil</span>
+                <span style="color:#66d9ef">end</span>
+                <span style="color:#66d9ef">return</span> ret
+            <span style="color:#66d9ef">end</span>
+        })
+    <span style="color:#75715e">--移至上一層繼續遞歸</span>
+    typeSuper <span style="color:#f92672">=</span> typeSuper.super
+<span style="color:#66d9ef">end</span>
+</code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>调用父类及自身的构造函数</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua"><span style="color:#66d9ef">do</span>
+    <span style="color:#75715e">--從最上層的父類開始，調用每層的構造函數</span>
+    <span style="color:#66d9ef">local</span> create
+    create <span style="color:#f92672">=</span> <span style="color:#66d9ef">function</span>(c,...)
+        <span style="color:#66d9ef">if</span> c.super <span style="color:#66d9ef">then</span>
+            create(c.super,...)
+        <span style="color:#66d9ef">end</span>
+        <span style="color:#75715e">--最後調用自己的構造函數</span>
+        <span style="color:#66d9ef">if</span> c.ctor <span style="color:#66d9ef">then</span>
+            c.ctor(obj,...)
+        <span style="color:#66d9ef">end</span>
+    <span style="color:#66d9ef">end</span>
+    create(class_type,...)
+<span style="color:#66d9ef">end</span>
+<span style="color:#75715e">--把完成構造的對象返回</span>
+<span style="color:#66d9ef">return</span> obj
+</code></pre></div></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+<p>成员容器（local vtbl）</p>
+<ol>
+<li>
+<p>判断类型的兼容性</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua">__is_class <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>,
+<span style="color:#75715e">--判斷函數</span>
+is_class_type <span style="color:#f92672">=</span> <span style="color:#66d9ef">function</span>(type)
+    <span style="color:#75715e">--如果調用的函數的類型與成員表所屬的類型是否相同</span>
+    <span style="color:#66d9ef">if</span> class_type <span style="color:#f92672">==</span> type <span style="color:#66d9ef">then</span>
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>
+    <span style="color:#66d9ef">end</span>
+    <span style="color:#75715e">--判斷調用該函數的類型是否為成員表所屬類型的父類</span>
+    <span style="color:#66d9ef">local</span> typeSuper <span style="color:#f92672">=</span> class_type.super
+    <span style="color:#66d9ef">while</span> typeSuper <span style="color:#f92672">~=</span> <span style="color:#66d9ef">nil</span> <span style="color:#66d9ef">do</span>
+        <span style="color:#66d9ef">if</span> typeSuper <span style="color:#f92672">==</span> type <span style="color:#66d9ef">then</span>
+            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>
+        <span style="color:#66d9ef">end</span>
+        typeSuper <span style="color:#f92672">=</span> typeSuper.super
+    <span style="color:#66d9ef">end</span>
+    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>
+<span style="color:#66d9ef">end</span>,
+</code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>声明成员</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua">DeclareMembers <span style="color:#f92672">=</span> <span style="color:#66d9ef">function</span>(obj, members)
+    <span style="color:#75715e">--得到原始表中的成員表</span>
+    <span style="color:#66d9ef">local</span> vt <span style="color:#f92672">=</span> rawget(obj, <span style="color:#e6db74">&#34;__vt&#34;</span>)
+    <span style="color:#75715e">--得到元表</span>
+    <span style="color:#66d9ef">local</span> mt <span style="color:#f92672">=</span> getmetatable(obj)
+    <span style="color:#75715e">--把__index和__newindex指向新的成員</span>
+    mt.__index <span style="color:#f92672">=</span> members
+    mt.__newindex <span style="color:#f92672">=</span> members
+    <span style="color:#75715e">--把原始表的成員表設為新成員的元表，並讓使用者在嘗試為不存在的成員賦值時，使用__newindex來創建值</span>
+    setmetatable(members, {__index <span style="color:#f92672">=</span> vt, __newindex <span style="color:#f92672">=</span> <span style="color:#66d9ef">function</span>(t, key, value) rawset(obj, key, value) <span style="color:#66d9ef">end</span>})
+<span style="color:#66d9ef">end</span>,
+</code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>声明成员变量</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua">DeclareVar <span style="color:#f92672">=</span> <span style="color:#66d9ef">function</span>(obj, name, value)
+    <span style="color:#66d9ef">if</span> obj[name] <span style="color:#f92672">~=</span> <span style="color:#66d9ef">nil</span> <span style="color:#66d9ef">then</span> 
+        error(string.format(<span style="color:#e6db74">&#34;成员变量:%s 已存在，声明失败&#34;</span>, name))
+        <span style="color:#66d9ef">return</span>
+    <span style="color:#66d9ef">end</span>
+    <span style="color:#75715e">--跳過元表判斷，直接設置原始表的成員</span>
+    rawset(obj, name, value)
+<span style="color:#66d9ef">end</span>
+</code></pre></div></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+<p>后续处理</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua">_class[class_type]<span style="color:#f92672">=</span> vtbl <span style="color:#75715e">--把成員表設置在類表中對應的位置</span>
+
+<span style="color:#75715e">--為類型設置元表，使得類型在新增成員時，存到vtbl中</span>
+setmetatable(class_type,{__newindex<span style="color:#f92672">=</span>
+        <span style="color:#66d9ef">function</span>(t,k,v)
+            vtbl[k]<span style="color:#f92672">=</span>v
+        <span style="color:#66d9ef">end</span>
+    })
+
+<span style="color:#75715e">--如果有父類</span>
+<span style="color:#66d9ef">if</span> super <span style="color:#66d9ef">then</span>
+    <span style="color:#75715e">--把父類賦值給成員表</span>
+    vtbl.__super <span style="color:#f92672">=</span> super
+    <span style="color:#75715e">--為對象表設置元表，使得可以在無法從子類得到成員的情況下，就嘗試從父類入手</span>
+    setmetatable(vtbl,{__index<span style="color:#f92672">=</span>
+            <span style="color:#66d9ef">function</span>(t,k)
+                <span style="color:#75715e">--取父類中的指定成員</span>
+                <span style="color:#66d9ef">local</span> ret<span style="color:#f92672">=</span>_class[super][k]
+                <span style="color:#75715e">--把該值賦予給當前類的成員表</span>
+                vtbl[k]<span style="color:#f92672">=</span>ret
+                <span style="color:#66d9ef">return</span> ret
+            <span style="color:#66d9ef">end</span>
+        })
+<span style="color:#66d9ef">end</span>
+
+<span style="color:#75715e">--返回類容器</span>
+<span style="color:#66d9ef">return</span> class_type
+</code></pre></div></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+<p>功能函数</p>
+<ol>
+<li>
+<p>is_class(class_type)</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua"><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">is_class</span>(class_type)
+    <span style="color:#66d9ef">return</span> _class[class_type] <span style="color:#f92672">~=</span> <span style="color:#66d9ef">nil</span> <span style="color:#75715e">--判斷一個類是否存在於類表中</span>
+<span style="color:#66d9ef">end</span>
+</code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>super(selfObj, superClass)</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua"><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">super</span>(selfObj, superClass)
+    <span style="color:#75715e">--嘗試得到父類</span>
+    superClass <span style="color:#f92672">=</span> superClass <span style="color:#f92672">or</span> selfObj.__super
+    <span style="color:#66d9ef">if</span> superClass <span style="color:#66d9ef">then</span> <span style="color:#75715e">--如果父類不為空</span>
+        <span style="color:#75715e">--返回父類對象</span>
+        <span style="color:#66d9ef">return</span> selfObj[superClass]
+    <span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span>
+</code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>get_static(class_type)</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua"><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">get_static</span>(class_type)
+    <span style="color:#66d9ef">if</span> class_type <span style="color:#66d9ef">then</span> <span style="color:#75715e">--如果實參的類型不為空</span>
+        <span style="color:#66d9ef">return</span> _class[class_type] <span style="color:#75715e">--從類表中返回類對象</span>
+    <span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span>
+</code></pre></div></li>
+</ul>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+</ul>
+<hr>
+<h5 id="5-lua的gc机制">5. Lua的GC机制</h5>
+<ul>
+<li>
+<p>Lua的GC使用的基本算法是标记和清扫算法</p>
+<ul>
+<li>该算法一共有4个阶段：
+<ul>
+<li>标记阶段：把根集标记为活跃，该集合由Lua可直接访问的对象组成。一个活跃对象可以到达的对象也是活跃的。当所有活跃对象被标记后，该阶段结束。</li>
+<li>整理阶段：这个阶段处理析构器和弱引用表。首先，Lua遍历所有被标记为需要析构，但又没有活跃标记的对象，这些对象会暂时被标记为活跃（复苏）并放到一个单独的列表裡（析构阶段使用）；然后Lua遍历弱引用表，从中移除键或值未被标记的元素
+<ul>
+<li>析构器：元表中含__gc的对象</li>
+<li>弱引用表：元素中含__mode = &ldquo;k&quot;或&quot;v&quot;或两者都有的对象</li>
+</ul>
+</li>
+<li>清扫阶段：遍历所有对象，如果一个对象没有被标记为活跃，则将其回收；否则，Lua清理标记，准备下次清理周期</li>
+<li>析构阶段：调用整理阶段单独分离出的对象的析构器</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>目前Lua可以选择使用两种GC模式的其中一种</p>
+<ul>
+<li>增量模式（incremental mode）（默认）</li>
+<li>分代模式（generational mode）</li>
+</ul>
+</li>
+<li>
+<p>增量模式（分步模式）</p>
+<ul>
+<li>
+<p>增量模式实际上是把Lua5.1版本前一次性完成，且会在GC期间停止主程序运行的回收过程，改成与解释器一起交替运行。因此增量GC模式的不会在回收过程中停止主程序的运行。</p>
+<ul>
+<li>
+<p>每当解释器分配了一定数量的内存时，GC也执行一小步。</p>
+<ul>
+<li>GC的步进倍率和间歇率可以分别通过setpause和setstepmul设置。前者为一次收集完成后等待多久再开始新一轮的收集；后者为每分配1KB内存，GC应该进行多少工作（值越高，GC越不积极）</li>
+</ul>
+</li>
+<li>
+<p>这个模式会使GC在工作期间，可能会改变一个对象的可达性。因此，Lua使用了一些手段确保了GC的正确性。</p>
+<ul>
+<li>
+<p>三色标记算法 =&gt; 每个对象都可能有以下三个状态的其中一个：</p>
+<ul>
+<li>
+<p>白色：所有没有被标记过（无法到达）都为白色，需要被清除</p>
+<ul>
+<li>所有对象创建的时候/GC周期开始之前的所有对象都会被设为白色</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#75715e">/*
+</span><span style="color:#75715e">** create a new collectable object (with given type and size) and link
+</span><span style="color:#75715e">** it to &#39;allgc&#39; list.
+</span><span style="color:#75715e">*/</span>
+GCObject <span style="color:#f92672">*</span><span style="color:#a6e22e">luaC_newobj</span> (lua_State <span style="color:#f92672">*</span>L, <span style="color:#66d9ef">int</span> tt, size_t sz) {
+    global_State <span style="color:#f92672">*</span>g <span style="color:#f92672">=</span> G(L);
+    GCObject <span style="color:#f92672">*</span>o <span style="color:#f92672">=</span> cast(GCObject <span style="color:#f92672">*</span>, luaM_newobject(L, novariant(tt), sz));
+    o<span style="color:#f92672">-&gt;</span>marked <span style="color:#f92672">=</span> luaC_white(g);
+    o<span style="color:#f92672">-&gt;</span>tt <span style="color:#f92672">=</span> tt;
+    o<span style="color:#f92672">-&gt;</span>next <span style="color:#f92672">=</span> g<span style="color:#f92672">-&gt;</span>allgc;
+    g<span style="color:#f92672">-&gt;</span>allgc <span style="color:#f92672">=</span> o;
+    <span style="color:#66d9ef">return</span> o;
+}
+</code></pre></div></li>
+<li>
+<p>灰色：对象本身虽然被标记了，但它引用的对象没有被标记。表示了对象标记的一个中间状态</p>
+</li>
+<li>
+<p>黑色：对象自身以及它引用的对象都已被标记（可以到达）</p>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#75715e">#define WHITE0BIT	3  </span><span style="color:#75715e">/* object is white (type 0) */</span><span style="color:#75715e">
+</span><span style="color:#75715e">#define WHITE1BIT	4  </span><span style="color:#75715e">/* object is white (type 1) */</span><span style="color:#75715e">
+</span><span style="color:#75715e">#define BLACKBIT	5  </span><span style="color:#75715e">/* object is black */</span><span style="color:#75715e">
+</span><span style="color:#75715e">#define FINALIZEDBIT	6  </span><span style="color:#75715e">/* object has been marked for finalization */</span><span style="color:#75715e">
+</span><span style="color:#75715e">#define TESTBIT		7
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define WHITEBITS	bit2mask(WHITE0BIT, WHITE1BIT)
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define iswhite(x)      testbits((x)-&gt;marked, WHITEBITS)
+</span><span style="color:#75715e">#define isblack(x)      testbit((x)-&gt;marked, BLACKBIT)
+</span><span style="color:#75715e">#define isgray(x)  </span><span style="color:#75715e">/* neither white nor black */</span><span style="color:#75715e">  \
+</span><span style="color:#75715e">    (!testbits((x)-&gt;marked, WHITEBITS | bitmask(BLACKBIT)))
+</span></code></pre></div></li>
+<li>
+<p>对所有对象进行遍历时，会根据可到达的情况给对象「上色」（黑色和灰色）</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">reallymarkobject</span> (global_State <span style="color:#f92672">*</span>g, GCObject <span style="color:#f92672">*</span>o) {
+    <span style="color:#66d9ef">switch</span> (o<span style="color:#f92672">-&gt;</span>tt) {
+        <span style="color:#66d9ef">case</span> LUA_VSHRSTR:
+        <span style="color:#66d9ef">case</span> LUA_VLNGSTR: {
+            set2black(o);  <span style="color:#75715e">/* nothing to visit */</span>
+            <span style="color:#66d9ef">break</span>;
+        }
+        <span style="color:#66d9ef">case</span> LUA_VUPVAL: {
+            UpVal <span style="color:#f92672">*</span>uv <span style="color:#f92672">=</span> gco2upv(o);
+            <span style="color:#66d9ef">if</span> (upisopen(uv))
+                set2gray(uv);  <span style="color:#75715e">/* open upvalues are kept gray */</span>
+            <span style="color:#66d9ef">else</span>
+                set2black(uv);  <span style="color:#75715e">/* closed upvalues are visited here */</span>
+            markvalue(g, uv<span style="color:#f92672">-&gt;</span>v);  <span style="color:#75715e">/* mark its content */</span>
+            <span style="color:#66d9ef">break</span>;
+        }
+        <span style="color:#66d9ef">case</span> LUA_VUSERDATA: {
+            Udata <span style="color:#f92672">*</span>u <span style="color:#f92672">=</span> gco2u(o);
+            <span style="color:#66d9ef">if</span> (u<span style="color:#f92672">-&gt;</span>nuvalue <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>) {  <span style="color:#75715e">/* no user values? */</span>
+                markobjectN(g, u<span style="color:#f92672">-&gt;</span>metatable);  <span style="color:#75715e">/* mark its metatable */</span>
+                set2black(u);  <span style="color:#75715e">/* nothing else to mark */</span>
+                <span style="color:#66d9ef">break</span>;
+            }
+            <span style="color:#75715e">/* else... */</span>
+        }  <span style="color:#75715e">/* FALLTHROUGH */</span>
+        <span style="color:#66d9ef">case</span> LUA_VLCL: <span style="color:#66d9ef">case</span> LUA_VCCL: <span style="color:#66d9ef">case</span> LUA_VTABLE:
+        <span style="color:#66d9ef">case</span> LUA_VTHREAD: <span style="color:#66d9ef">case</span> LUA_VPROTO: {
+            linkobjgclist(o, g<span style="color:#f92672">-&gt;</span>gray);  <span style="color:#75715e">/* to be visited later */</span>
+            <span style="color:#66d9ef">break</span>;
+        }
+        <span style="color:#66d9ef">default</span><span style="color:#f92672">:</span> lua_assert(<span style="color:#ae81ff">0</span>); <span style="color:#66d9ef">break</span>;
+    }
+}
+</code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>总的来说，白色对象集就是会被回收的部分；黑色就是需要保留的部分；灰色就是GC目前黑白色的边界。</p>
+<ul>
+<li>在理想的情况下，黑色的对象在任何时间点都不可能指向白色的对象；所有被根集引用的对象要麽是黑色的、要麽是灰色的。</li>
+<li>随著GC回收工作一步一步的进行，当所有灰色对象都转成黑色对象后，GC回收工作结束。</li>
+</ul>
+</li>
+<li>
+<p>不过，由于增量式GC模式的工作是与解释器交叉推进的，使得有的对象的可达性会受影响，因此，有可能会出现「黑色指向白色」的情况</p>
+<ul>
+<li>
+<p>当出然这种情况时，就会在这种赋值的地方插入一个write barrier，恢复不变条件（黑色不会指向白色）</p>
+</li>
+<li>
+<p>要麽是把白色的对象变成灰色（forward）</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">luaC_barrier_</span> (lua_State <span style="color:#f92672">*</span>L, GCObject <span style="color:#f92672">*</span>o, GCObject <span style="color:#f92672">*</span>v) {
+    global_State <span style="color:#f92672">*</span>g <span style="color:#f92672">=</span> G(L);
+    lua_assert(isblack(o) <span style="color:#f92672">&amp;&amp;</span> iswhite(v) <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">!</span>isdead(g, v) <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">!</span>isdead(g, o));
+    <span style="color:#66d9ef">if</span> (keepinvariant(g)) {  <span style="color:#75715e">/* must keep invariant? */</span>
+        reallymarkobject(g, v);  <span style="color:#75715e">/* restore invariant */</span>
+        <span style="color:#66d9ef">if</span> (isold(o)) {
+            lua_assert(<span style="color:#f92672">!</span>isold(v));  <span style="color:#75715e">/* white object could not be old */</span>
+            setage(v, G_OLD0);  <span style="color:#75715e">/* restore generational invariant */</span>
+        }
+    }
+    <span style="color:#66d9ef">else</span> {  <span style="color:#75715e">/* sweep phase */</span>
+        lua_assert(issweepphase(g));
+        <span style="color:#66d9ef">if</span> (g<span style="color:#f92672">-&gt;</span>gckind <span style="color:#f92672">==</span> KGC_INC)  <span style="color:#75715e">/* incremental mode? */</span>
+            makewhite(g, o);  <span style="color:#75715e">/* mark &#39;o&#39; as white to avoid other barriers */</span>
+    }
+}
+</code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>要麽是把黑色的对象变成灰色（backward）</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">luaC_barrierback_</span> (lua_State <span style="color:#f92672">*</span>L, GCObject <span style="color:#f92672">*</span>o) {
+    global_State <span style="color:#f92672">*</span>g <span style="color:#f92672">=</span> G(L);
+    lua_assert(isblack(o) <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">!</span>isdead(g, o));
+    lua_assert((g<span style="color:#f92672">-&gt;</span>gckind <span style="color:#f92672">==</span> KGC_GEN) <span style="color:#f92672">==</span> (isold(o) <span style="color:#f92672">&amp;&amp;</span> getage(o) <span style="color:#f92672">!=</span> G_TOUCHED1));
+    <span style="color:#66d9ef">if</span> (getage(o) <span style="color:#f92672">==</span> G_TOUCHED2)  <span style="color:#75715e">/* already in gray list? */</span>
+        set2gray(o);  <span style="color:#75715e">/* make it gray to become touched1 */</span>
+    <span style="color:#66d9ef">else</span>  <span style="color:#75715e">/* link it in &#39;grayagain&#39; and paint it gray */</span>
+        linkobjgclist(o, g<span style="color:#f92672">-&gt;</span>grayagain);
+    <span style="color:#66d9ef">if</span> (isold(o))  <span style="color:#75715e">/* generational mode? */</span>
+        setage(o, G_TOUCHED1);  <span style="color:#75715e">/* touched in current cycle */</span>
+}
+</code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>重新变回灰色的对象会被放到单独的一个列表中，等待原子阶段（atomic phase）时遍历</p>
+</li>
+</ul>
+</li>
+<li>
+<p>标记阶段会被原子步骤（atomic step）所终结，在该步骤中：</p>
+<ul>
+<li>所有「被重置为灰色」的对象都会被遍历</li>
+<li>弱引用表会被清理</li>
+<li>分离出需要调用的析构器</li>
+</ul>
+</li>
+<li>
+<p>增量式收集器</p>
+</li>
+<li>
+<p>GC 的步进只和虚拟机分配新的内存有关，只要虚拟机不分配更多内存，GC 是不会自动运行的。</p>
+<ul>
+<li>步进式 GC 需要用setpause和setstepmul来控制 GC 的工作时间：</li>
+</ul>
+</li>
+<li>
+<p>总而言之，步进式 GC 能够减少每次 GC 工作时的停顿时间，但是无法减少 GC 带来的额外开销，相反，GC 的时间成本（额外的 Barrier ）和空间成本（未能及时回收不再使用的内存）反而较之全量 GC 增加了。</p>
+</li>
+</ul>
+</li>
+<li>
+<p>分代模式</p>
+<ul>
+<li>
+<p>分代模式假设大部分的对象都会很快被销毁，所以，收集器可以集中工作量在这些「年轻」的对象上</p>
+</li>
+<li>
+<p>所有的对象被分类为「年轻」和「年老」两代。当它们被创建出来时是「年轻」的；经过两次次级收集（minor collection）后仍然没被回收的就成长为「年老」的</p>
+<ul>
+<li>次级收集：只会遍历且清理「年轻」对象</li>
+</ul>
+</li>
+<li>
+<p>分代 GC 的不变项：</p>
+<ul>
+<li>
+<p>「老对象」不会指向「新对象」</p>
+</li>
+<li>
+<p>这使得分步模式的不变项难以被保持</p>
+<ul>
+<li>无论是 forward 还是 backward 都有问题：
+<ul>
+<li>对于 forward ，也就是把新对象变成老的，无疑会制造大量老对象，还需要递归变量，否则就会打破规则。</li>
+<li>如果是采用 backward 策略，更很难保持条件成立（对象很难知道谁引用了自己，就无法准确的把老对象变回新的）。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>所以，需要引入第三态：「被接触过的」</p>
+<ul>
+<li>如果back barrier检测到一个「老对象」，该「老对象」会被标记为「被接触过的」，并将它放到一个特殊的列表裡</li>
+<li>这些「被接触过」的对象在次级收集中也会被遍历，但是不会被收集。</li>
+<li>经过两次次级收集周期后，「被接触」的对象返回到「老对象」状态，直到它再次「被接触」
+<ul>
+<li>在Lua 5.2 的分代 GC 算法中，只针对单个次级收集周期处理。任何对象活过当前的收集周期，就会变老。但这样处理，如果一个对象刚刚被创建出来，次级收集过程就开启了，它很容易就活过这个周期，对象就迅速变老了。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#75715e">/* object age in generational mode */</span>
+<span style="color:#75715e">#define G_NEW		0	</span><span style="color:#75715e">/* created in current cycle */</span><span style="color:#75715e">
+</span><span style="color:#75715e">#define G_SURVIVAL	1	</span><span style="color:#75715e">/* created in previous cycle */</span><span style="color:#75715e">
+</span><span style="color:#75715e">#define G_OLD0		2	</span><span style="color:#75715e">/* marked old by frw. barrier in this cycle */</span><span style="color:#75715e">
+</span><span style="color:#75715e">#define G_OLD1		3	</span><span style="color:#75715e">/* first full cycle as old */</span><span style="color:#75715e">
+</span><span style="color:#75715e">#define G_OLD		4	</span><span style="color:#75715e">/* really old object (not to be visited) */</span><span style="color:#75715e">
+</span><span style="color:#75715e">#define G_TOUCHED1	5	</span><span style="color:#75715e">/* old object touched this cycle */</span><span style="color:#75715e">
+</span><span style="color:#75715e">#define G_TOUCHED2	6	</span><span style="color:#75715e">/* old object touched in previous cycle */</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define AGEBITS		7  </span><span style="color:#75715e">/* all age bits (111) */</span><span style="color:#75715e">
+</span></code></pre></div></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="6-lua的全局变量跟local变量">6. Lua的全局变量跟local变量</h5>
+<ul>
+<li>
+<p>Lua的全局变量跟local变量的区别</p>
+<ul>
+<li>
+<p>实现：局部变量是在栈上的register上通过整数索引得到的；全局变量则是在table或者userdata中,通过string常量或者string变量作为键来索引全局变量。</p>
+</li>
+<li>
+<p>性能：通过实现不同,局部变量稍微比全局变量速度快。</p>
+</li>
+<li>
+<p>Lua是如何查询一个全局变量</p>
+<ul>
+<li>
+<p>Lua将所有的全局变量保存在一个常规的table中,这个table称之为环境(_G),使 用下面的代码可以打印当前环境中所有全局变量的名称</p>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#75715e">//lauxlib.h
+</span><span style="color:#75715e"></span><span style="color:#75715e">/* global table */</span>
+<span style="color:#75715e">#define LUA_GNAME	&#34;_G&#34;
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">//lapi.c
+</span><span style="color:#75715e"></span><span style="color:#75715e">/*
+</span><span style="color:#75715e">** Get the global table in the registry. Since all predefined
+</span><span style="color:#75715e">** indices in the registry were inserted right when the registry
+</span><span style="color:#75715e">** was created and never removed, they must always be in the array
+</span><span style="color:#75715e">** part of the registry.
+</span><span style="color:#75715e">*/</span>
+<span style="color:#75715e">#define getGtable(L)  \
+</span><span style="color:#75715e">	(&amp;hvalue(&amp;G(L)-&gt;l_registry)-&gt;array[LUA_RIDX_GLOBALS - 1])
+</span><span style="color:#75715e"></span>
+LUA_API <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">lua_getglobal</span> (lua_State <span style="color:#f92672">*</span>L, <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>name) {
+  <span style="color:#66d9ef">const</span> TValue <span style="color:#f92672">*</span>G;
+  lua_lock(L);
+  G <span style="color:#f92672">=</span> getGtable(L);
+  <span style="color:#66d9ef">return</span> auxgetstr(L, G, name);
+}
+
+LUA_API <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">lua_setglobal</span> (lua_State <span style="color:#f92672">*</span>L, <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>name) {
+  <span style="color:#66d9ef">const</span> TValue <span style="color:#f92672">*</span>G;
+  lua_lock(L);  <span style="color:#75715e">/* unlock done in &#39;auxsetstr&#39; */</span>
+  G <span style="color:#f92672">=</span> getGtable(L);
+  auxsetstr(L, G, name);
+}
+
+<span style="color:#75715e">/*
+</span><span style="color:#75715e">** get functions (Lua -&gt; stack)
+</span><span style="color:#75715e">*/</span>
+<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">auxgetstr</span> (lua_State <span style="color:#f92672">*</span>L, <span style="color:#66d9ef">const</span> TValue <span style="color:#f92672">*</span>t, <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>k) {
+  <span style="color:#66d9ef">const</span> TValue <span style="color:#f92672">*</span>slot;
+  TString <span style="color:#f92672">*</span>str <span style="color:#f92672">=</span> luaS_new(L, k);
+  <span style="color:#66d9ef">if</span> (luaV_fastget(L, t, str, slot, luaH_getstr)) {
+    setobj2s(L, L<span style="color:#f92672">-&gt;</span>top, slot);
+    api_incr_top(L);
+  }
+  <span style="color:#66d9ef">else</span> {
+    setsvalue2s(L, L<span style="color:#f92672">-&gt;</span>top, str);
+    api_incr_top(L);
+    luaV_finishget(L, t, s2v(L<span style="color:#f92672">-&gt;</span>top <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>), L<span style="color:#f92672">-&gt;</span>top <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>, slot);
+  }
+  lua_unlock(L);
+  <span style="color:#66d9ef">return</span> ttype(s2v(L<span style="color:#f92672">-&gt;</span>top <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>));
+}
+</code></pre></div></li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua">a <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>
+b <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;JJ&#34;</span>
+d <span style="color:#f92672">=</span> print
+c <span style="color:#f92672">=</span> a
+djkfd <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;(JIFE&#34;</span>
+fefe <span style="color:#f92672">=</span> <span style="color:#ae81ff">4343</span>
+
+
+<span style="color:#66d9ef">for</span> n <span style="color:#66d9ef">in</span> pairs(_G) <span style="color:#66d9ef">do</span>
+	print(n)
+<span style="color:#66d9ef">end</span>
+<span style="color:#75715e">--[[ output
+</span><span style="color:#75715e">a
+</span><span style="color:#75715e">string
+</span><span style="color:#75715e">xpcall
+</span><span style="color:#75715e">b
+</span><span style="color:#75715e">package
+</span><span style="color:#75715e">tostring
+</span><span style="color:#75715e">print
+</span><span style="color:#75715e">os
+</span><span style="color:#75715e">...
+</span><span style="color:#75715e">--]]</span>
+</code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>每一个函数中,局部变量的数量最大为200个。</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#75715e">//lparser.c
+</span><span style="color:#75715e"></span><span style="color:#75715e">/* maximum number of local variables per function (must be smaller
+</span><span style="color:#75715e">   than 250, due to the bytecode format) */</span>
+<span style="color:#75715e">#define MAXVARS		200
+</span></code></pre></div></li>
+<li>
+<p>Lua在运行任何代码之前,Lua预编译源代码成为内部字节码格式。字节码格式类似于真正CPU的机器指令。内部字节码格式通过C语言解释。實際上就是一個龐大的while-loop，包含了無數的switch語句，一個指令一個case。自从5.0版本,Lua使用一种register-based virtual machine 虚拟机。 “registers” 不依赖于CPU真正的指令。相反,lua使用stack 来解决registers。每一个函数最大有250个registers,。</p>
+</li>
+<li>
+<p>依赖于大量的registers，Lua預編譯器可以保存所有的局部變量在register中。所以，在Lua中访问局部变量非常快速。</p>
+</li>
+</ul>
+</li>
+<li>
+<p>作用域：局部变量的作用域在语法块中。在运行时,全局变量可以在任何环境table赋值的函数中获取。</p>
+<ul>
+<li>local的变量的作用域规则
+<ul>
+<li>如果定义在一个函数体中, 那么作用域就在函数中.</li>
+<li>如果定义在一个控制结构中, 那么就在这个控制结构中.</li>
+<li>如果定义在一个文件中, 那么作用域就在这个文件中.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>声明：局部变量必须通过明显的声明去定义和使用，但是,全局变量可以在代码执行时,动态的访问,甚至可以在运行时设置全局变量。局部变量的列表的定義是静态的；而全局变量列表可以在运行时才决定，甚至是改變。</p>
+</li>
+<li>
+<p>标准库的访问：所有Lua的标准库都是通过全局变量暴露给使用者。</p>
+</li>
+<li>
+<p>优先权：局部变量覆盖全局变量</p>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="7-元表">7. 元表</h5>
+<ul>
+<li>
+<p>元表主要是通过一系列的元方法，来为其所服务的table提供一些「面对非预定义行为的指定解决方法」，比如提供类似构造方法的调用的元方法__call、让两个表之间进行运算、提供类似继承的关係。总的来说，是让表具有一些类的行为。</p>
+<ul>
+<li>
+<p>__call：调用表的时候同时调用元表（如有）中的该元方法，可传参。</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua"><span style="color:#66d9ef">local</span> t <span style="color:#f92672">=</span> { }
+<span style="color:#66d9ef">local</span> mt <span style="color:#f92672">=</span> { }
+<span style="color:#75715e">--定義元方法，默認第一個參數為self</span>
+<span style="color:#66d9ef">function</span> <span style="color:#a6e22e">mt</span>:<span style="color:#a6e22e">__call</span>(arg)
+	print(<span style="color:#e6db74">&#34;with arg:&#34;</span>, arg)
+<span style="color:#66d9ef">end</span>
+setmetatable(t, mt)
+t(<span style="color:#e6db74">&#34;114514&#34;</span>)
+</code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>__add：类似于重载加法运算符</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua"><span style="color:#66d9ef">local</span> X <span style="color:#f92672">=</span> { c <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;x&#34;</span> }
+<span style="color:#66d9ef">local</span> Y <span style="color:#f92672">=</span> { c <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;y&#34;</span> }
+<span style="color:#66d9ef">local</span> m <span style="color:#f92672">=</span> {
+	<span style="color:#75715e">--運算符重載</span>
+	__add <span style="color:#f92672">=</span> <span style="color:#66d9ef">function</span>(t1, t2)
+		<span style="color:#66d9ef">return</span> { c <span style="color:#f92672">=</span> t1.c <span style="color:#f92672">..</span> t2.c }	<span style="color:#66d9ef">end</span>
+}
+setmetatable(X, m)
+setmetatable(Y, m)
+print((X <span style="color:#f92672">+</span> Y).c) <span style="color:#75715e">--xy</span>
+print((Y <span style="color:#f92672">+</span> X <span style="color:#f92672">+</span> Y).c) <span style="color:#75715e">--yxy</span>
+</code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>__index：当尝试访问表中的某个键时，发现表裡没有，就会向元表寻找index元方法中的定义（可以是表/键值对/方向），为表带来了类似于继承的功能</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua"><span style="color:#66d9ef">local</span> A <span style="color:#f92672">=</span> {}
+<span style="color:#66d9ef">local</span> metaA <span style="color:#f92672">=</span> { }
+<span style="color:#66d9ef">function</span> <span style="color:#a6e22e">metaA</span>:<span style="color:#a6e22e">__index</span>(arg)
+    <span style="color:#66d9ef">return</span> arg <span style="color:#f92672">*</span> arg
+<span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">function</span> <span style="color:#a6e22e">metaA</span>:<span style="color:#a6e22e">__call</span>(arg1, arg2)
+    print(A[arg1 <span style="color:#f92672">+</span> arg2])
+<span style="color:#66d9ef">end</span>
+setmetatable(A, metaA)
+<span style="color:#75715e">--[[
+</span><span style="color:#75715e">使用A.a來查找元素時，如果表中找不到，就去該表的元表中__index方法中
+</span><span style="color:#75715e">如果__index裡的是一個表，則這些表裡面重複上一步；如果是函數，就返回函數的返回值
+</span><span style="color:#75715e">--]]</span>
+A(<span style="color:#ae81ff">123</span>, <span style="color:#ae81ff">111</span>) <span style="color:#75715e">--54756</span>
+</code></pre></div></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="8-lua会产生的垃圾回收--情况">8. Lua会产生的垃圾回收  情况</h5>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#75715e">/*
+</span><span style="color:#75715e">** Union of all Lua values
+</span><span style="color:#75715e">*/</span>
+<span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">union</span> Value {
+    <span style="color:#66d9ef">struct</span> GCObject <span style="color:#f92672">*</span>gc;    <span style="color:#75715e">/* collectable objects */</span>
+    <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>p;         <span style="color:#75715e">/* light userdata */</span>
+    lua_CFunction f; <span style="color:#75715e">/* light C functions */</span>
+    lua_Integer i;   <span style="color:#75715e">/* integer numbers */</span>
+    lua_Number n;    <span style="color:#75715e">/* float numbers */</span>
+} Value;
+</code></pre></div></li>
+<li>
+<p>lua每次分配会被GC回收的数据类型（GCObject）时，会主动检查是否满足GC条件</p>
+<ul>
+<li>
+<p>当GCdept大于0时，就会触发自动GC</p>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#75715e">/*
+</span><span style="color:#75715e">** Does one step of collection when debt becomes positive. &#39;pre&#39;/&#39;pos&#39;
+</span><span style="color:#75715e">** allows some adjustments to be done only when needed. macro
+</span><span style="color:#75715e">** &#39;condchangemem&#39; is used only for heavy tests (forcing a full
+</span><span style="color:#75715e">** GC cycle on every opportunity)
+</span><span style="color:#75715e">*/</span>
+<span style="color:#75715e">#define luaC_condGC(L,pre,pos) \
+</span><span style="color:#75715e">	{ if (G(L)-&gt;GCdebt &gt; 0) { pre; luaC_step(L); pos;}; \
+</span><span style="color:#75715e">	  condchangemem(L,pre,pos); }
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">/* more often than not, &#39;pre&#39;/&#39;pos&#39; are empty */</span>
+<span style="color:#75715e">#define luaC_checkGC(L)		luaC_condGC(L,(void)0,(void)0)
+</span></code></pre></div></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="9-lua的尾调用">9. Lua的尾调用</h5>
+<ul>
+<li>
+<p>当一个函数（Func_A）的最后一个动作是调用另一个函数（Func_N），就会发生尾调用。被调用的函数完成工作后，不会返回调用Fun_N的位置，而是直接返回到调用Func_A的位置</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua"><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">func_A</span>(x)
+    n <span style="color:#f92672">=</span> x <span style="color:#f92672">*</span> x
+    print(n)
+    func_N(n)
+<span style="color:#66d9ef">end</span>
+ <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">func_N</span>(n)
+    <span style="color:#66d9ef">if</span>(n <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>) <span style="color:#66d9ef">then</span> <span style="color:#66d9ef">return</span> func_N(n <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>) <span style="color:#66d9ef">end</span>
+ <span style="color:#66d9ef">end</span>
+func_A(<span style="color:#ae81ff">3</span>)
+</code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>在调用func_N(n)后，func_A(x)就没有任何后续行为，因此也没有必要保留后者的栈信息，减少栈溢出的机会。</p>
+</li>
+</ul>
+
+        </div>
+
+        
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/lua%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">Lua性能测试</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            没有标签
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+    
+    
+
+</div>
+
+                    <footer id="footer">
+    <div>
+        &copy; 2022 <a href="http://www.flysnow.org">qpalzm811 blog By qpalzm811 blog</a>
+        
+    </div>
+    <br />
+    <div>
+        <div class="github-badge">
+            <a href="https://gohugo.io/" target="_black" rel="nofollow"><span class="badge-subject">Powered by</span><span class="badge-value bg-blue">Hugo</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://www.flysnow.org/" target="_black"><span class="badge-subject">Design by</span><span class="badge-value bg-brightgreen">飞雪无情</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://github.com/flysnow-org/maupassant-hugo" target="_black"><span class="badge-subject">Theme</span><span class="badge-value bg-yellowgreen">Maupassant</span></a>
+        </div>
+    </div>
+</footer>
+
+
+    
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='//www.google.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://www.flysnow.org">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://www.flysnow.org/post/lua%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" title="Lua基础知识">Lua基础知识</a>
+    </li>
+    
+    <li>
+        <a href="http://www.flysnow.org/post/lua%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/" title="Lua性能测试">Lua性能测试</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
+<ul class="widget-list">
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
+<div class="tagcloud">
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">友情链接</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="http://yuedu.baidu.com/ebook/14a722970740be1e640e9a3e" title="Android Gradle权威指南">Android Gradle权威指南</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="http://mirrors.flysnow.org/" title="常用开发工具CDN镜像">常用开发工具CDN镜像</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://www.flysnow.org/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
