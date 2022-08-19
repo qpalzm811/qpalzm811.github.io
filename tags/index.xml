@@ -2,9 +2,9 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on qpalzm811 blog</title>
-    <link>http://www.flysnow.org/tags/</link>
+    <link>http://qpalzm811.github.io/tags/</link>
     <description>Recent content in Tags on qpalzm811 blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-CN</language><atom:link href="http://www.flysnow.org/tags/index.xml" rel="self" type="application/rss+xml" />
+    <language>zh-CN</language><atom:link href="http://qpalzm811.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
   </channel>
 </rss>
