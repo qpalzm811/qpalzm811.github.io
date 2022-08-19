@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on qpalzm811 blog</title>
-    <link>http://qpalzm811.github.io/post/</link>
+    <link>https://qpalzm811.github.io/post/</link>
     <description>Recent content in Posts on qpalzm811 blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Fri, 19 Aug 2022 04:21:31 +0800</lastBuildDate><atom:link href="http://qpalzm811.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 19 Aug 2022 04:21:31 +0800</lastBuildDate><atom:link href="https://qpalzm811.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Lua基础知识</title>
-      <link>http://qpalzm811.github.io/post/lua%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</link>
+      <link>https://qpalzm811.github.io/post/lua%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</link>
       <pubDate>Fri, 19 Aug 2022 04:21:31 +0800</pubDate>
       
-      <guid>http://qpalzm811.github.io/post/lua%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</guid>
+      <guid>https://qpalzm811.github.io/post/lua%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</guid>
       <description>Lua基礎知識 1. Lua的底层数据类型   常用的数据类型包括：
  nil boolean number string function userdata thread table    //Lua源碼中的數據類型宏定義 //file: lua.h /* ** basic types */ #define LUA_TNONE	(-1)  #define LUA_TNIL	0 #define LUA_TBOOLEAN	1 #define LUA_TLIGHTUSERDATA	2 #define LUA_TNUMBER	3 #define LUA_TSTRING	4 #define LUA_TTABLE	5 #define LUA_TFUNCTION	6 #define LUA_TUSERDATA	7 #define LUA_TTHREAD	8  #define LUA_NUMTYPES	9   当中没有被包括在常用类型的basic types为：
  None LightUserData NumTypes     2.</description>
@@ -20,10 +20,10 @@
     
     <item>
       <title>Lua性能测试</title>
-      <link>http://qpalzm811.github.io/post/lua%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/</link>
+      <link>https://qpalzm811.github.io/post/lua%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/</link>
       <pubDate>Fri, 19 Aug 2022 04:17:41 +0800</pubDate>
       
-      <guid>http://qpalzm811.github.io/post/lua%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/</guid>
+      <guid>https://qpalzm811.github.io/post/lua%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/</guid>
       <description>性能測試 1. Lua和C# 循环产生内存垃圾   使用profiler查看循环产生内存垃圾对性能的影响（CPU Usage）
   Lua方面，使用toLua进行测试
   测试规则：

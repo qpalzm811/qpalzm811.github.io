@@ -2,9 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Categories on qpalzm811 blog</title>
-    <link>http://qpalzm811.github.io/categories/</link>
+    <link>https://qpalzm811.github.io/categories/</link>
     <description>Recent content in Categories on qpalzm811 blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-CN</language><atom:link href="http://qpalzm811.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
+    <language>zh-CN</language>
+    <lastBuildDate>Fri, 19 Aug 2022 04:21:31 +0800</lastBuildDate><atom:link href="https://qpalzm811.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>lua</title>
+      <link>https://qpalzm811.github.io/categories/lua/</link>
+      <pubDate>Fri, 19 Aug 2022 04:21:31 +0800</pubDate>
+      
+      <guid>https://qpalzm811.github.io/categories/lua/</guid>
+      <description></description>
+    </item>
+    
   </channel>
 </rss>
