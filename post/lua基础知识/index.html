@@ -136,11 +136,15 @@
     <div class="post-toc-content">
         <nav id="TableOfContents">
   <ul>
-    <li>
-      <ul>
-        <li></li>
-      </ul>
-    </li>
+    <li><a href="#1-lua的底层数据类型">1. Lua的底层数据类型</a></li>
+    <li><a href="#2-table存储形式与resize">2. Table存储形式与Resize</a></li>
+    <li><a href="#3-table-遍历">3. Table 遍历</a></li>
+    <li><a href="#4-项目使用的-class-机制">4. 项目使用的 class 机制</a></li>
+    <li><a href="#5-lua的gc机制">5. Lua的GC机制</a></li>
+    <li><a href="#6-lua的全局变量跟local变量">6. Lua的全局变量跟local变量</a></li>
+    <li><a href="#7-元表">7. 元表</a></li>
+    <li><a href="#8-lua会产生的垃圾回收--情况">8. Lua会产生的垃圾回收  情况</a></li>
+    <li><a href="#9-lua的尾调用">9. Lua的尾调用</a></li>
   </ul>
 </nav>
     </div>
@@ -200,8 +204,8 @@
         </div>
         
         <div class="post-content">
-            <h4 id="lua基礎知識">Lua基礎知識</h4>
-<h5 id="1-lua的底层数据类型">1. Lua的底层数据类型</h5>
+            <h1 id="lua基礎知識">Lua基礎知識</h1>
+<h2 id="1-lua的底层数据类型">1. Lua的底层数据类型</h2>
 <ul>
 <li>
 <p>常用的数据类型包括：</p>
@@ -246,7 +250,7 @@
 </li>
 </ul>
 <hr>
-<h5 id="2-table存储形式与resize">2. Table存储形式与Resize</h5>
+<h2 id="2-table存储形式与resize">2. Table存储形式与Resize</h2>
 <ul>
 <li>
 <p>其他语言提供的所有结构&mdash;数组，记录，列表，队列，集合这些在lua中都用table来表示</p>
@@ -370,7 +374,7 @@ b.z <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>
 </code></pre></div></li>
 </ul>
 <hr>
-<h5 id="3-table-遍历">3. Table 遍历</h5>
+<h2 id="3-table-遍历">3. Table 遍历</h2>
 <ul>
 <li>
 <p>第一种：pairs迭代器</p>
@@ -489,7 +493,7 @@ hi</p>
 </li>
 </ul>
 <hr>
-<h5 id="4-项目使用的-class-机制">4. 项目使用的 class 机制</h5>
+<h2 id="4-项目使用的-class-机制">4. 项目使用的 class 机制</h2>
 <ul>
 <li>
 <p>项目中的class机制由class.lua脚本实现。该脚本被项目中的绝大多数脚本所继承。该脚本是lua实现OOP的基础，基类中的基类，使其他继承它的lua脚本具有类、继承的概念。</p>
@@ -749,7 +753,7 @@ setmetatable(class_type,{__newindex<span style="color:#f92672">=</span>
 </li>
 </ul>
 <hr>
-<h5 id="5-lua的gc机制">5. Lua的GC机制</h5>
+<h2 id="5-lua的gc机制">5. Lua的GC机制</h2>
 <ul>
 <li>
 <p>Lua的GC使用的基本算法是标记和清扫算法</p>
@@ -1021,7 +1025,7 @@ GCObject <span style="color:#f92672">*</span><span style="color:#a6e22e">luaC_ne
 </li>
 </ul>
 <hr>
-<h5 id="6-lua的全局变量跟local变量">6. Lua的全局变量跟local变量</h5>
+<h2 id="6-lua的全局变量跟local变量">6. Lua的全局变量跟local变量</h2>
 <ul>
 <li>
 <p>Lua的全局变量跟local变量的区别</p>
@@ -1154,7 +1158,7 @@ fefe <span style="color:#f92672">=</span> <span style="color:#ae81ff">4343</span
 </li>
 </ul>
 <hr>
-<h5 id="7-元表">7. 元表</h5>
+<h2 id="7-元表">7. 元表</h2>
 <ul>
 <li>
 <p>元表主要是通过一系列的元方法，来为其所服务的table提供一些「面对非预定义行为的指定解决方法」，比如提供类似构造方法的调用的元方法__call、让两个表之间进行运算、提供类似继承的关係。总的来说，是让表具有一些类的行为。</p>
@@ -1217,7 +1221,7 @@ A(<span style="color:#ae81ff">123</span>, <span style="color:#ae81ff">111</span>
 </li>
 </ul>
 <hr>
-<h5 id="8-lua会产生的垃圾回收--情况">8. Lua会产生的垃圾回收  情况</h5>
+<h2 id="8-lua会产生的垃圾回收--情况">8. Lua会产生的垃圾回收  情况</h2>
 <ul>
 <li>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#75715e">/*
@@ -1255,7 +1259,7 @@ A(<span style="color:#ae81ff">123</span>, <span style="color:#ae81ff">111</span>
 </li>
 </ul>
 <hr>
-<h5 id="9-lua的尾调用">9. Lua的尾调用</h5>
+<h2 id="9-lua的尾调用">9. Lua的尾调用</h2>
 <ul>
 <li>
 <p>当一个函数（Func_A）的最后一个动作是调用另一个函数（Func_N），就会发生尾调用。被调用的函数完成工作后，不会返回调用Fun_N的位置，而是直接返回到调用Func_A的位置</p>
@@ -1299,7 +1303,7 @@ func_A(<span style="color:#ae81ff">3</span>)
             
             <ul class="clearfix">
                 
-                <li><a href='/tags/lua'>Lua</a></li>
+                <li><a href='/tags/lua'>lua</a></li>
                 
             </ul>
             
@@ -1369,6 +1373,10 @@ func_A(<span style="color:#ae81ff">3</span>)
 <ul class="widget-list">
     
     <li>
+        <a href="https://qpalzm811.github.io/post/unityshader%E5%85%A5%E9%97%A8%E7%B2%BE%E8%A6%81/unityshader/" title="Unity入门精要笔记">Unity入门精要笔记</a>
+    </li>
+    
+    <li>
         <a href="https://qpalzm811.github.io/post/lua%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" title="Lua基础知识">Lua基础知识</a>
     </li>
     
@@ -1385,7 +1393,7 @@ func_A(<span style="color:#ae81ff">3</span>)
         <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
 <ul class="widget-list">
     
-    <li><a href="https://qpalzm811.github.io/categories/lua/">lua (1)</a></li>
+    <li><a href="https://qpalzm811.github.io/categories/lua/">lua (3)</a></li>
     
 </ul>
     </section>
@@ -1394,7 +1402,7 @@ func_A(<span style="color:#ae81ff">3</span>)
         <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
 <div class="tagcloud">
     
-    <a href="https://qpalzm811.github.io/tags/lua/">Lua</a>
+    <a href="https://qpalzm811.github.io/tags/lua/">lua</a>
     
 </div>
     </section>

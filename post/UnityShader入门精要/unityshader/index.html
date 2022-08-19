@@ -1,0 +1,2654 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+
+    <title>Unity入门精要笔记 | qpalzm811 blog</title>
+    <meta property="og:title" content="Unity入门精要笔记 - qpalzm811 blog">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2022-08-19T09:21:31&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2022-08-19T09:21:31&#43;08:00'>
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="Unity入门精要笔记">
+        
+    <meta name="author" content="qpalzm811 blog">
+    <meta property="og:url" content="https://qpalzm811.github.io/post/unityshader%E5%85%A5%E9%97%A8%E7%B2%BE%E8%A6%81/unityshader/">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+    
+    
+    
+</head>
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://qpalzm811.github.io/">
+                        qpalzm811 blog
+                    </a>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://qpalzm811.github.io/">首页</a>
+                    
+                    <a  href="https://qpalzm811.github.io/books/" title="新书">新书</a>
+                    
+                    <a  href="https://qpalzm811.github.io/archives/" title="归档">归档</a>
+                    
+                    <a  href="https://qpalzm811.github.io/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 200px;
+        margin-left: -210px;
+        padding: 5px 10px;
+        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+        font-size: 12px;
+        border: 1px solid rgba(0, 0, 0, .07);
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+        background-clip: padding-box;
+        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        word-wrap: break-word;
+        white-space: nowrap;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 20px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#31-unity-shader概述">3.1 unity shader概述</a>
+      <ul>
+        <li><a href="#313-unity-中的shader">3.1.3 unity 中的shader</a></li>
+      </ul>
+    </li>
+    <li><a href="#32-unity-shader的基础shaderlab">3.2 Unity Shader的基础ShaderLab</a></li>
+    <li><a href="#33-unityshader的结构">3.3 UnityShader的结构</a>
+      <ul>
+        <li><a href="#332-材质-material-和-unityshader的桥梁properties">3.3.2 材质 Material 和 UnityShader的桥梁：Properties</a></li>
+        <li><a href="#333-重量级成员subshader">3.3.3 重量级成员：SubShader</a></li>
+        <li><a href="#334-后路fallback">3.3.4 后路：Fallback</a></li>
+      </ul>
+    </li>
+    <li><a href="#34-unity-shader的形式">3.4 Unity Shader的形式</a>
+      <ul>
+        <li><a href="#341unity宠儿-表面着色器-surfaceshader">3.4.1Unity宠儿 ：表面着色器 SurfaceShader</a></li>
+        <li><a href="#342-最聪明的孩子顶点片元着色器">3.4.2 最聪明的孩子：顶点/片元着色器</a></li>
+        <li><a href="#343-被抛弃的角落-固定函数着色器-fixed-function-shader">3.4.3 被抛弃的角落： 固定函数着色器 Fixed Function Shader</a></li>
+        <li><a href="#344-选择unityshader形式的建议">3.4.4 选择UnityShader形式的建议</a></li>
+      </ul>
+    </li>
+    <li><a href="#36-答疑解惑">3.6 答疑解惑</a>
+      <ul>
+        <li><a href="#361-unityshader--真正shader">3.6.1 UnityShader != 真正Shader</a></li>
+        <li><a href="#362-unityshader和cghlsl关系">3.6.2 UnityShader和CG/HLSL关系</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#42笛卡尔坐标系">4.2笛卡尔坐标系</a>
+      <ul>
+        <li><a href="#423-左手坐标系和右手坐标系">4.2.3 左手坐标系和右手坐标系</a></li>
+        <li><a href="#424-unity使用的坐标系">4.2.4 Unity使用的坐标系</a></li>
+        <li><a href="#425练习">4.2.5练习</a></li>
+      </ul>
+    </li>
+    <li><a href="#43-点和矢量">4.3 点和矢量</a>
+      <ul>
+        <li><a href="#432-矢量运算">4.3.2 矢量运算</a></li>
+        <li><a href="#433-练习">4.3.3 练习</a></li>
+      </ul>
+    </li>
+    <li><a href="#44矩阵">4.4矩阵</a>
+      <ul>
+        <li><a href="#441-矩阵定义">4.4.1 矩阵定义</a></li>
+        <li><a href="#442-矢量连接起来">4.4.2 矢量连接起来</a></li>
+        <li><a href="#443-矩阵运算">4.4.3 矩阵运算</a></li>
+        <li><a href="#444-特殊的矩阵">4.4.4 特殊的矩阵</a></li>
+        <li><a href="#445-行矩阵还是列矩阵矩阵变换-左乘-右乘问题">4.4.5 行矩阵还是列矩阵(矩阵变换 左乘 右乘问题)</a></li>
+      </ul>
+    </li>
+    <li><a href="#45-矩阵的几何意义变换">4.5 矩阵的几何意义：变换</a>
+      <ul>
+        <li><a href="#452-齐次坐标-homogeneous-coordinate">4.5.2 齐次坐标 homogeneous coordinate</a></li>
+        <li><a href="#453-分解基础变换矩阵">4.5.3 分解基础变换矩阵</a></li>
+        <li><a href="#454-平移矩阵">4.5.4 平移矩阵</a></li>
+        <li><a href="#455-缩放矩阵">4.5.5 缩放矩阵</a></li>
+        <li><a href="#456-旋转矩阵">4.5.6 旋转矩阵</a></li>
+        <li><a href="#457-复合变换">4.5.7 复合变换</a></li>
+      </ul>
+    </li>
+    <li><a href="#46-坐标空间">4.6 坐标空间</a>
+      <ul>
+        <li><a href="#461-为什么要用这么多不同的坐标空间">4.6.1 为什么要用这么多不同的坐标空间</a></li>
+        <li><a href="#462-坐标空间的变换">4.6.2 坐标空间的变换</a></li>
+        <li><a href="#463-顶点的坐标空间变换过程">4.6.3 顶点的坐标空间变换过程</a></li>
+        <li><a href="#464-模型空间model-space">4.6.4 模型空间(model space)</a></li>
+        <li><a href="#465-世界空间-world-space">4.6.5 世界空间 world space</a></li>
+        <li><a href="#466-观察空间-view-space">4.6.6 观察空间 （View space）</a></li>
+        <li><a href="#467-裁剪空间-clip-space">4.6.7 裁剪空间 clip space</a></li>
+        <li><a href="#468-屏幕空间">4.6.8 屏幕空间</a></li>
+        <li><a href="#469-总结">4.6.9 总结</a></li>
+      </ul>
+    </li>
+    <li><a href="#47-法线变换">4.7 法线变换</a></li>
+    <li><a href="#48-unity-shader-内置变量数学篇">4.8 Unity Shader 内置变量（数学篇）</a>
+      <ul>
+        <li><a href="#481-变换矩阵">4.8.1 变换矩阵</a></li>
+        <li><a href="#482-摄像机屏幕参数">4.8.2 摄像机屏幕参数</a></li>
+      </ul>
+    </li>
+    <li><a href="#49-答疑解惑">4.9 答疑解惑</a>
+      <ul>
+        <li><a href="#491-使用3--3还是4--4-矩阵">4.9.1 使用3 * 3还是4 * 4 矩阵</a></li>
+        <li><a href="#492-cg中的-矢量-和矩阵类型">4.9.2 CG中的 矢量 和矩阵类型</a></li>
+        <li><a href="#493-unity的屏幕坐标-computescreenposvposwpos">4.9.3 unity的屏幕坐标 ：ComputeScreenPos/VPOS/WPOS</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#52-简单的顶点片元着色器">5.2 简单的顶点/片元着色器</a>
+      <ul>
+        <li><a href="#521-顶点片元着色器-基本结构">5.2.1 顶点/片元着色器 基本结构</a></li>
+        <li><a href="#522-模型数据从哪里来">5.2.2 模型数据从哪里来</a></li>
+        <li><a href="#523-顶点着色器和片元着色器之间如何通信">5.2.3 顶点着色器和片元着色器之间如何通信</a></li>
+        <li><a href="#524-如何使用属性">5.2.4 如何使用属性</a></li>
+      </ul>
+    </li>
+    <li><a href="#53-强大的援手unity提供的内置文件和变量">5.3 强大的援手：Unity提供的内置文件和变量</a>
+      <ul>
+        <li><a href="#531-内置包含文件">5.3.1 内置包含文件</a></li>
+        <li><a href="#532-内置的变量">5.3.2 内置的变量</a></li>
+      </ul>
+    </li>
+    <li><a href="#54-unity-提供的-cghlsl语义">5.4 Unity 提供的 CG/HLSL语义</a>
+      <ul>
+        <li><a href="#541-什么是语义semantics">5.4.1 什么是语义（semantics）</a></li>
+        <li><a href="#542-unity支持的语义">5.4.2 Unity支持的语义</a></li>
+        <li><a href="#543-如何定义复杂的变量类型">5.4.3 如何定义复杂的变量类型</a></li>
+      </ul>
+    </li>
+    <li><a href="#55-debug">5.5 Debug</a>
+      <ul>
+        <li><a href="#551-使用假彩色图像false-color-image">5.5.1 使用假彩色图像（false-color image）</a></li>
+        <li><a href="#552-visual-studio调试">5.5.2 Visual Studio调试</a></li>
+        <li><a href="#553-帧调试器-frame-debugger">5.5.3 帧调试器 Frame Debugger</a></li>
+      </ul>
+    </li>
+    <li><a href="#56-小心渲染平台差异">5.6 小心渲染平台差异</a>
+      <ul>
+        <li><a href="#562-shader-语法差异">5.6.2 Shader 语法差异</a></li>
+        <li><a href="#563-shader语义差异">5.6.3 Shader语义差异</a></li>
+        <li><a href="#564-其他平台差异">5.6.4 其他平台差异</a></li>
+      </ul>
+    </li>
+    <li><a href="#57-shader简洁之道">5.7 Shader简洁之道</a>
+      <ul>
+        <li><a href="#571-floathalf-还是-fixed">5.7.1 float、half 还是 fixed</a></li>
+        <li><a href="#572-规范语法">5.7.2 规范语法</a></li>
+        <li><a href="#573-避免不必要运算">5.7.3 避免不必要运算</a></li>
+        <li><a href="#574-慎用分支-循环语句">5.7.4 慎用分支 循环语句</a></li>
+        <li><a href="#575-不要除以-0">5.7.5 不要除以 0</a></li>
+      </ul>
+    </li>
+    <li><a href="#58-扩展阅读">5.8 扩展阅读</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#61-我们是如何看到世界的">6.1 我们是如何看到世界的</a>
+      <ul>
+        <li><a href="#611-光源">6.1.1 光源</a></li>
+        <li><a href="#612-吸收和散射">6.1.2 吸收和散射</a></li>
+        <li><a href="#613-着色shading">6.1.3 着色（shading）</a></li>
+        <li><a href="#614-brdf-光照模型">6.1.4 BRDF 光照模型</a></li>
+      </ul>
+    </li>
+    <li><a href="#62-标准光照模型">6.2 标准光照模型</a>
+      <ul>
+        <li><a href="#621-环境光">6.2.1 环境光</a></li>
+        <li><a href="#622-自发光">6.2.2 自发光</a></li>
+        <li><a href="#623-漫反射">6.2.3 漫反射</a></li>
+        <li><a href="#624-高光反射">6.2.4 高光反射</a></li>
+        <li><a href="#625-逐像素-还是-逐顶点">6.2.5 逐像素 还是 逐顶点</a></li>
+        <li><a href="#626-总结">6.2.6 总结</a></li>
+      </ul>
+    </li>
+    <li><a href="#63-unity中的环境光和自发光">6.3 Unity中的环境光和自发光</a></li>
+    <li><a href="#64-unity中实现漫反射光照模型">6.4 Unity中实现漫反射光照模型</a>
+      <ul>
+        <li><a href="#641-实践逐顶点光照">6.4.1 实践：逐顶点光照</a></li>
+        <li><a href="#642-逐像素光照">6.4.2 逐像素光照</a></li>
+        <li><a href="#643-半兰伯特模型">6.4.3 半兰伯特模型</a></li>
+      </ul>
+    </li>
+    <li><a href="#65-unity-高光反射光照模型">6.5 Unity 高光反射光照模型</a>
+      <ul>
+        <li><a href="#651-逐顶点光照">6.5.1 逐顶点光照</a></li>
+        <li><a href="#652-逐像素光照">6.5.2 逐像素光照</a></li>
+        <li><a href="#653-blinn-phong-光照模型">6.5.3 Blinn-Phong 光照模型</a></li>
+      </ul>
+    </li>
+    <li><a href="#66-使用unity内置函数">6.6 使用Unity内置函数</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#71-单张纹理">7.1 单张纹理</a>
+      <ul>
+        <li><a href="#711-实践">7.1.1 实践</a></li>
+        <li><a href="#712-纹理的属性">7.1.2 纹理的属性</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            var leftPos = $("#main").offset().left;
+            if (leftPos < 220) {
+                postToc.css({ "width": leftPos - 10, "margin-left": (0 - leftPos) })
+            }
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+
+        if ($("#TableOfContents").children().length < 1) {
+            $(".post-toc").remove();
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">Unity入门精要笔记</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2022年8月19日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='/categories/lua'>lua</a></span>
+            
+        </div>
+        
+        
+        
+        <div class="clear" style="display: none">
+            <div class="toc-article">
+                <div class="toc-title">文章目录</div>
+            </div>
+        </div>
+        
+        <div class="post-content">
+            <p>高清彩图](<a href="https://blog.csdn.net/Raymond_King123/article/details/115661077">https://blog.csdn.net/Raymond_King123/article/details/115661077</a>)</p>
+<h1 id="第三章-unityshader基础">第三章 Unityshader基础</h1>
+<h2 id="31-unity-shader概述">3.1 unity shader概述</h2>
+<h3 id="313-unity-中的shader">3.1.3 unity 中的shader</h3>
+<p>unity shader与之前提及的渲染管线的shader很大不同。</p>
+<p>Unity提供了四种模板</p>
+<ol>
+<li>Standard Surface Shader：产生一个包含 标准光照模型，使用unity5新加的基于物理的渲染方法 的 表面着色器模板。</li>
+<li>Unlit Shader：产生不包含 光照 （但包含雾效）的基本 顶点 片元着色器</li>
+<li>Image Effect Shader：实现各种屏幕后处理效果 基本模板</li>
+<li>Computer Shader：特殊shader，用GPU进行常规渲染流水线无关的计算（本书不讨论）</li>
+</ol>
+<p>Unity Shader必须和材质Material结合起来</p>
+<h2 id="32-unity-shader的基础shaderlab">3.2 Unity Shader的基础ShaderLab</h2>
+<ul>
+<li>ShaderLab是Unity提供的Unity Shader说明性语言</li>
+<li>使用嵌套在花括号内部的语义（Syntax）没教书Unity Shader文件的结构</li>
+<li>会根据使用的平台将这些结构，编译成真正的代码和Shader文件。</li>
+</ul>
+<pre tabindex="0"><code>Shader &quot;ShaderName&quot;{
+	Properties{
+		//属性
+	}
+	SubShader{
+		//显卡A使用的子着色器
+	}
+	SubShader{
+		//显卡A使用的子着色器
+	}
+}
+</code></pre><h2 id="33-unityshader的结构">3.3 UnityShader的结构</h2>
+<h3 id="332-材质-material-和-unityshader的桥梁properties">3.3.2 材质 Material 和 UnityShader的桥梁：Properties</h3>
+<p><a href="https://docs.unity3d.com/Manual/SL-Properties.html">ShaderLab: defining material properties</a></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"><strong>Type</strong></th>
+<th style="text-align:left"><strong>Example syntax</strong></th>
+<th style="text-align:left"><strong>Comment</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><strong>Integer</strong></td>
+<td style="text-align:left"><code>_ExampleName (&quot;Integer display name&quot;, Integer) = 1</code></td>
+<td style="text-align:left">真正的整形Integer，不像Int是用浮点实现的。<!-- raw HTML omitted -->为了兼容性可以使用Int</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>Int</strong> (legacy)</td>
+<td style="text-align:left"><code>_ExampleName (&quot;Int display name&quot;, Int) = 1</code></td>
+<td style="text-align:left">只是为了兼容性，浮点实现。若整形用<strong>Integer</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>Float</strong></td>
+<td style="text-align:left"><code> _ExampleName (&quot;Float display name&quot;, Float) = 0.5</code><!-- raw HTML omitted --> <code>_ExampleName (&quot;Float with range&quot;, Range(0.0, 1.0)) = 0.5</code></td>
+<td style="text-align:left">浮点，Range可以表示一个拉动条</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>2D</strong></td>
+<td style="text-align:left"><code>_ExampleName (&quot;Texture2D display name&quot;, 2D) = &quot;&quot; {}</code> <!-- raw HTML omitted --> <code>_ExampleName (&quot;Texture2D display name&quot;, 2D) = &quot;red&quot; {}</code></td>
+<td style="text-align:left">下值放在字符串中使用unity内置纹理<!-- raw HTML omitted -->“white” (RGBA: 1,1,1,1),<!-- raw HTML omitted --> “black” (RGBA: 0,0,0,1),<!-- raw HTML omitted --> “gray” (RGBA: 0.5,0.5,0.5,1),<!-- raw HTML omitted --> “bump” (RGBA: 0.5,0.5,1,0.5) ,<!-- raw HTML omitted --> “red” (RGBA: 1,0,0,1).<!-- raw HTML omitted -->不写默认“gray”.  <strong>Note:</strong> 这默认纹理在 Inspector不可见</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>2DArray</strong></td>
+<td style="text-align:left"><code>_ExampleName (&quot;Texture2DArray display name&quot;, 2DArray) = &quot;&quot; {}</code></td>
+<td style="text-align:left">For more information, see <a href="https://docs.unity3d.com/Manual/class-Texture2DArray.html">Texture arrays</a>.</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>3D</strong></td>
+<td style="text-align:left"><code>_ExampleName (&quot;Texture3D&quot;, 3D) = &quot;&quot; {}</code></td>
+<td style="text-align:left">默认“gray” (RGBA: 0.5,0.5,0.5,1) texture.</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>Cube</strong></td>
+<td style="text-align:left"><code>_ExampleName (&quot;Cubemap&quot;, Cube) = &quot;&quot; {}</code></td>
+<td style="text-align:left">默认“gray” (RGBA: 0.5,0.5,0.5,1) texture.</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>CubemapArray</strong></td>
+<td style="text-align:left"><code>_ExampleName (&quot;CubemapArray&quot;, CubeArray) = &quot;&quot; {}</code></td>
+<td style="text-align:left">See <a href="https://docs.unity3d.com/Manual/class-CubemapArray.html">Cubemap arrays</a>.</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>Color</strong></td>
+<td style="text-align:left"><code>_ExampleName(&quot;Example color&quot;, Color) = (.25, .5, .5, 1)</code></td>
+<td style="text-align:left">颜色选择器float4类型<!-- raw HTML omitted --> 若想编辑四个单独浮点数，可用Vector类型</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>Vector</strong></td>
+<td style="text-align:left"><code>_ExampleName (&quot;Example vector&quot;, Vector) = (.25, .5, .5, 1)</code></td>
+<td style="text-align:left">float4类型，若想用颜色用Color</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Int Float Integer Range 都是数字类型，Color，Vector 默认值用 ( ) 中的四维向量</li>
+<li>2D, 3D, Cube是三种纹理值，用一个 字符串 和后面的 花括号 制定， 一般为内置的纹理名称&quot;red&quot;等
+<ul>
+<li>花括号用于 指定<strong>纹理属性</strong>， unity5.0后需要自己在 顶点着色器 编写计算相关 <strong>纹理坐标</strong> 的 代码</li>
+</ul>
+</li>
+</ul>
+<p>
+        <img class="mx-auto" alt="image-20220429085336547" src="UnityShader.assets/image-20220429085336547.png" />   
+    </p>
+<p>Properties 是为了让这些属性出现在材质面板中（补图）</p>
+<h3 id="333-重量级成员subshader">3.3.3 重量级成员：SubShader</h3>
+<ul>
+<li>每个UnityShader文件可以包含多个SubShader语义块，至少一个。</li>
+<li>需要加载的时候扫描每个SubShader 选择第一个可在 <strong>目标平台</strong> 上运行的SubShader。根据不同显卡进行不同的复杂度计算</li>
+<li>都不支持的话，Unity使用Fallback语义指定的UnityShader</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c#" data-lang="c#">SubShader{
+	<span style="color:#75715e">//可选的
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">	[Tags]</span>
+<span style="color:#a6e22e">	[RenderSetup]</span>
+	Pass{	}
+}
+</code></pre></div><ol>
+<li>SubShader定义了一系列Pass 和 可选的 <strong>状态</strong><code>[RenderSetup]</code>和 <strong>标签</strong><code>[Tags]</code></li>
+<li>每个Pass定义了一次完整的渲染流程，过多的Pass造成渲染性能下降</li>
+<li>RenderSetup 和 Tags同样可以在 Pass中声明，在RenderSetup和Tags中设置的可用于所有Pass</li>
+</ol>
+<h4 id="状态设置-rendersetup">状态设置 RenderSetup</h4>
+<p>渲染状态设置指令，可以设置显卡各种状态</p>
+<p>
+        <img class="mx-auto" alt="image-20220427104623531" src="UnityShader.assets/image-20220427104623531.png" />   
+    </p>
+<p>若写在RenderSetup中，则应用到所有的Pass，若不想如此，可以在<strong>Pass中单独设置</strong></p>
+<h4 id="标签-tags">标签 Tags</h4>
+<ul>
+<li>Tags是一个键值对，key和value都是字符串string类型</li>
+<li>告诉渲染引擎 希望 <strong>怎样 何时</strong> 渲染这个对象</li>
+<li>类似：<code>Tags{ &quot;TagName1&quot; = &quot;Value1&quot; }</code></li>
+</ul>
+<p>
+        <img class="mx-auto" alt="image-20220427112009975" src="UnityShader.assets/image-20220427112009975.png" />   
+    </p>
+<ul>
+<li><strong>上述Tags 仅可以在Sunshader声明， 不可以在Pass中声明！</strong></li>
+<li><strong>Pass中也可以声明标签，但是不同于SubShader的标签类型</strong></li>
+</ul>
+<h4 id="pass">Pass</h4>
+<pre tabindex="0"><code>Pass{
+	[Name]
+	[Tags]
+	[RenderSetup]
+	// other code
+}
+</code></pre><ol>
+<li>
+<p>先在Pass中定义 Pass 的名称 <code>Name “MyPassName”</code>：</p>
+<ol>
+<li>通过Name，可以直接用其他的Shader的Passs，<code>UsePass “MyShader/MYPASSNAME”</code></li>
+<li><strong>Unity会把所有的Pass名称转为大写，一定要用大写</strong></li>
+</ol>
+</li>
+<li>
+<p>Pass可以设置渲染状态 <strong>RenderSetup</strong>,除了上面的状态设置外,还可以用 固定管线的着色器(3.4.3)命令</p>
+</li>
+<li>
+<p>Pass还可以设置标签<strong>Tags</strong>，不同于SubShader的标签。 但也是用于告诉渲染引擎，怎样渲染该物体的</p>
+<ol>
+<li>
+        <img class="mx-auto" alt="image-20220427154643950" src="UnityShader.assets/image-20220427154643950.png" />   
+    </li>
+</ol>
+</li>
+<li>
+<p>UnityShader还支持特殊Pass，用于代码复用或者更复杂效果</p>
+<ol>
+<li><strong>UsePass</strong>：复用其他Shader 的Pass</li>
+<li><strong>GrabPass</strong>：改Pass负责抓取屏幕，并将结果存储在一张纹理中，后续的Pass处理（详见10.2.2）</li>
+</ol>
+</li>
+</ol>
+<h3 id="334-后路fallback">3.3.4 后路：Fallback</h3>
+<ul>
+<li>一个Shader的所有SubShader都运行不了，就用这个 Fallback</li>
+<li><code>Fallback “name&quot;</code>或<code>Fallbcak Off</code></li>
+<li>Fallback还会影响阴影的投射，
+<ul>
+<li>在<strong>渲染阴影纹理</strong>的时候，unity会在每个Shader中找到一个阴影投射的Pass</li>
+<li>一般，我们不需要 专门实现一个Pass，因为Fallback包含了一个通用的Pass</li>
+<li>因此为每个Shader设置正确的Fallback很重要，详见9.4节</li>
+</ul>
+</li>
+</ul>
+<p>自定义材质面板的编辑界面，可以使用CustomEditor扩展编辑界面</p>
+<h2 id="34-unity-shader的形式">3.4 Unity Shader的形式</h2>
+<ul>
+<li>UnityShader最主要的工作还是指定<strong>各种着色器</strong>的代码。</li>
+<li>可以写在 SubShader中（表面着色器）</li>
+<li>可以写在Pass 块中（顶点/片元着色器 和 固定函数着色器做法）</li>
+</ul>
+<h3 id="341unity宠儿-表面着色器-surfaceshader">3.4.1Unity宠儿 ：表面着色器 SurfaceShader</h3>
+<ol>
+<li>这是Unity自造的着色器，可以当做一种 顶点/片元着色器的高层抽象</li>
+<li>为我们处理了很多光照细节</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C#" data-lang="C#">Shader <span style="color:#e6db74">&#34;Custom/Simple Surface Shader&#34;</span>{
+	SunShader {
+		Tags{ <span style="color:#e6db74">&#34;RenderType&#34;</span> = <span style="color:#e6db74">&#34;Opaque&#34;</span>}
+		CGPROGRAM
+		<span style="color:#75715e">#pragma surface surf Lambert
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Input</span> {
+			float4 color : COLOR;
+		};
+		<span style="color:#66d9ef">void</span> surf (Input IN, inout SurfaceOutput o){
+			o.Albedo = <span style="color:#ae81ff">1</span>;
+		}
+		ENDCG
+	}
+	Fallback <span style="color:#e6db74">&#34;Diffuse&#34;</span>
+}
+</code></pre></div><ul>
+<li>表面着色器定义在SubShader 的 CGPROGRAM和 ENDCG之间</li>
+<li>因为，Surface Shader不需要关心用多少个Pass，每个Pass如何渲染，Unity为我们做好</li>
+<li>CGPROGRAM 和 ENDCG 之间的代码是使用CG/HLSL编写的</li>
+</ul>
+<h3 id="342-最聪明的孩子顶点片元着色器">3.4.2 最聪明的孩子：顶点/片元着色器</h3>
+<p>Unity中可以使用CG/HLSL语言编写顶点/片元着色器（Vertex/Fragment Shader)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C#" data-lang="C#">Shader <span style="color:#e6db74">&#34;Custom/Simple Surface Shader&#34;</span>{
+	SunShader {
+        	Pass{
+                	CDPROGRAM
+                        <span style="color:#75715e">#pragma vertex vert
+</span><span style="color:#75715e"></span>                        <span style="color:#75715e">#pragma fragment frag
+</span><span style="color:#75715e"></span>                        float4 vert(float4 v : POSITON) : SV_POSITION{
+                        	<span style="color:#66d9ef">return</span> mul {UNITY_MATRIX_MVP, v};
+                        }
+                	fixed4 frag() : SV_Target {
+                        	<span style="color:#66d9ef">return</span> fixed4(<span style="color:#ae81ff">1.0</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.0</span>);
+                        }
+                        ENDCG
+            }
+	}
+}
+</code></pre></div><ol>
+<li>Surface Shder一样，Vertex/Fragment 也要定义在<code>CGPROGRAM</code> 和 <code>ENDCG</code>之间</li>
+<li>不同：Vertex/Fragment<strong>要写在Pass</strong>语义块中，而不是SubShader中</li>
+</ol>
+<h3 id="343-被抛弃的角落-固定函数着色器-fixed-function-shader">3.4.3 被抛弃的角落： 固定函数着色器 Fixed Function Shader</h3>
+<p>对于老旧设备，GPU仅支持DirectX7、OpenGL 1.5 或者OpenGL ES 1.5，例如iPhone3<strong>不支持可编程管线Shader</strong>，需要用到</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C#" data-lang="C#">Shader  <span style="color:#e6db74">&#34;Tutortial/Basic&#34;</span>{
+	Properties{
+		<span style="color:#ae81ff">_</span>Color {<span style="color:#e6db74">&#34;Main Color&#34;</span>. Color} = {<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0.5</span>, <span style="color:#ae81ff">0.5</span>, <span style="color:#ae81ff">1</span>}
+	}
+	SubShader{
+		Pass{
+			Material{
+				Diffuse { <span style="color:#ae81ff">_</span>Color }
+			}
+			Lighting On
+		}
+	}
+}
+</code></pre></div><p>Fixed Function Shader定义在 Pass 语义块，相当于一些渲染设置，我们需要完全使用ShaderLab语法编写</p>
+<h3 id="344-选择unityshader形式的建议">3.4.4 选择UnityShader形式的建议</h3>
+<ol>
+<li>如果是 <strong>光源</strong>打交道，推荐表面着色器 Surface Shader</li>
+<li>如果是 光源少，例如只有一个平行光，推荐 顶点/片元着色器Vertex/Fragment Shader</li>
+<li>如果有更多 <strong>自定义效果</strong>，推荐使用 顶点/片元着色器Vertex/Fragment Shader</li>
+</ol>
+<h2 id="36-答疑解惑">3.6 答疑解惑</h2>
+<h3 id="361-unityshader--真正shader">3.6.1 UnityShader != 真正Shader</h3>
+<p>UnityShader（ShaderLab）我们可以做到的远多于 一个 传统Shader</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">传统Shader</th>
+<th style="text-align:center">UnityShader(ShaderLab)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">仅可编写特定Shader，如顶点着色器，片元着色器</td>
+<td style="text-align:center">一个文件中同时包含顶点着色器，片元着色器</td>
+</tr>
+<tr>
+<td style="text-align:center">无法设置一些渲染设置，如是否开启混合，深度测试等<!-- raw HTML omitted -->是另外代码设置的</td>
+<td style="text-align:center">通过一行特定指令即可设置</td>
+</tr>
+<tr>
+<td style="text-align:center">冗长代码设置<strong>输入输出</strong>，小心处理输入输入位置对应关系</td>
+<td style="text-align:center">只需要特定语句块声明一些属性，便可依靠材质方便改变这些属性<!-- raw HTML omitted -->对于模型自带的数据（顶点位置，纹理坐标，法线的等）提供直接访问的方法</td>
+</tr>
+</tbody>
+</table>
+<h3 id="362-unityshader和cghlsl关系">3.6.2 UnityShader和CG/HLSL关系</h3>
+<ul>
+<li>
+<p>通常CG代码是位于Pass语义块中的</p>
+</li>
+<li>
+<p>但是，之前说讲 <strong>表面着色器SurfaceShader</strong>的时候，说CG是写在<strong>SubShader</strong>中的</p>
+<ul>
+<li>因为 表面着色器 会转化成 包含多个Pass的 顶点/片元着色器，以用于多种设备</li>
+<li>我们可在导入设置面板上点击 <em>Show Generated Code</em>看到生成的真正的 顶点/片元着色器 代码</li>
+<li>本质上，UnityShader只有两种形式，<!-- raw HTML omitted --><strong>顶点/片元着色器</strong><!-- raw HTML omitted --> 和 固定函数着色器(5.2后也会被转化为前者)</li>
+</ul>
+</li>
+</ul>
+<h1 id="第四章-shader所需的数学模型">第四章 Shader所需的数学模型</h1>
+<h2 id="42笛卡尔坐标系">4.2笛卡尔坐标系</h2>
+<p>
+        <img class="mx-auto" alt="image-20220429085541418" src="UnityShader.assets/image-20220429085541418.png" />   
+    </p>
+<p>二维笛卡尔坐标系之间转换：1. 顺时针转180°，此时y轴方向一致，x轴方向相反。2.</p>
+<ol>
+<li>三维笛卡尔坐标系定义了3个坐标轴 和 1个原点
+<ol>
+<li>3个坐标轴是 <strong>基矢量（basis vector）</strong>，相互垂直，长度为 1</li>
+<li>这种 <strong>基矢量</strong>被称为 <strong>标准正交基（orthonormal basis）</strong></li>
+<li>在一些坐标系中，坐标系之间相互垂直但是 长度不是 1 ，这种基矢量被称为 <strong>正交基（orthogonal basis）</strong></li>
+<li><strong>正交</strong>：相互垂直</li>
+</ol>
+</li>
+<li>因为坐标轴的方向不固定，所以导致了两种不同的坐标系：<strong>左手坐标系（left-handed coordinate space）<strong>和</strong>右手坐标系(right-handed coordinate space)</strong></li>
+</ol>
+<h3 id="423-左手坐标系和右手坐标系">4.2.3 左手坐标系和右手坐标系</h3>
+<ul>
+<li>对三维笛卡尔坐标系，靠二维的顺时针180°后水平翻转，不能让坐标系重合</li>
+<li>三维坐标系，我们令两个坐标轴重合，第三条指向总是相反的。这种的就是不同的<strong>旋向性（handedness）</strong></li>
+<li>Games101记忆更好记住，从X 握到 Y，大拇指指着 Z</li>
+</ul>
+<!-- raw HTML omitted -->
+<ul>
+<li>
+<p>**旋转的正方向：**用左手右手定则，确定旋转的正方向，大拇指指向旋转的轴正方向，四肢弯曲为正方向</p>
+<ul>
+<li>
+        <img class="mx-auto" alt="image-20220507112246813" src="UnityShader.assets/image-20220507112246813.png" />   
+    </li>
+</ul>
+</li>
+<li>
+<p>
+        <img class="mx-auto" alt="image-20220507141216930" src="UnityShader.assets/image-20220507141216930.png" />   
+    </p>
+<ul>
+<li>
+<p>相同的视觉现象，数学描述却是不同的</p>
+</li>
+<li>
+<table>
+<thead>
+<tr>
+<th>左手坐标</th>
+<th>X轴 +1</th>
+<th>Z轴 -4</th>
+<th>旋转60°</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>右手坐标</td>
+<td>X轴 +1</td>
+<td>Z轴 +4</td>
+<td>旋转-60度</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>大拇指指向Y轴，握拳看旋转正反</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="424-unity使用的坐标系">4.2.4 Unity使用的坐标系</h3>
+<ol>
+<li>Unity使用的是<strong>左手坐标系（left-handed  coordinate space）</strong></li>
+<li>但是观察空间，用到是<strong>右手坐标系（right-handed coordinate space）</strong>，摄像机前面方向是 <strong>-Z轴</strong>，与模型空间和世界空间相反，Z轴减少意味着场景深度增加（看绝对值就行）</li>
+<li>
+<!-- raw HTML omitted -->
+</li>
+</ol>
+<h3 id="425练习">4.2.5练习</h3>
+<ol>
+<li>3dMax的：X正指向右，Y指向前，Z指向上，什么坐标系？
+<ol>
+<li>右手坐标系，大拇指x，食指y，中指z。从x握拳到z，大拇指指y轴</li>
+</ol>
+</li>
+<li>左手坐标西，有一点(0,0,1)，绕y轴正方向旋转+90°，坐标多少？右手呢
+<ol>
+<li>
+        <img class="mx-auto" alt="image-20220509094553496" src="UnityShader.assets/image-20220509094553496.png" />   
+    </li>
+<li>(-1, 0, 0)</li>
+</ol>
+</li>
+<li>
+        <img class="mx-auto" alt="image-20220509095317761" src="UnityShader.assets/image-20220509095317761.png" />   
+    
+<ol>
+<li>摄像机观察空间中，球体Z值是：10</li>
+<li>摄像机模型空间下，球体Z值是：-10</li>
+</ol>
+</li>
+</ol>
+<h2 id="43-点和矢量">4.3 点和矢量</h2>
+<ul>
+<li><strong>点(Point)</strong>，N维度空间中的一个位置，没有大小，宽度概念。</li>
+<li><strong>矢量(vector)</strong>，为了和**标量(scalar)<strong>区分，指<!-- raw HTML omitted -->n维空间中包含</strong>模(magnitude)<strong>和</strong>方向(direction)**的有向线段<!-- raw HTML omitted -->。
+<ul>
+<li>矢量通常被用于表示一个点的<strong>偏移(displacement)</strong>，是<strong>相对量</strong>，</li>
+<li>所以<!-- raw HTML omitted --><strong>模和方向不变，无论放在哪里，都是同一个矢量</strong><!-- raw HTML omitted --></li>
+</ul>
+</li>
+</ul>
+<h3 id="432-矢量运算">4.3.2 矢量运算</h3>
+<h4 id="1-矢量标量乘除">1. <strong>矢量标量乘除</strong></h4>
+<ol>
+<li>
+        <img class="mx-auto" alt="image-20220509105239590" src="UnityShader.assets/image-20220509105239590.png" />   
+    </li>
+</ol>
+<h4 id="2-矢量加减法image-20220509113209008unityshaderassetsimage-20220509113209008png">2. <strong>矢量加减法</strong>
+        <img class="mx-auto" alt="image-20220509113209008" src="UnityShader.assets/image-20220509113209008.png" />   
+    </h4>
+<ol>
+<li>
+        <img class="mx-auto" alt="image-20220509113350752" src="UnityShader.assets/image-20220509113350752.png" />   
+    </li>
+<li>如果我们想要计算<strong>点b对点a</strong>的位移，就可以通过<strong>b-a</strong>得到</li>
+</ol>
+<h4 id="3-矢量的模image-20220509133428905unityshaderassetsimage-20220509133428905png">3. <strong>矢量的模</strong>
+        <img class="mx-auto" alt="image-20220509133428905" src="UnityShader.assets/image-20220509133428905.png" />   
+    </h4>
+<h4 id="4-单位矢量unit-vector模为1的矢量表示我们只关心方向direction">4. <strong>单位矢量（unit vector）</strong>：模为1的矢量，表示我们只关心<strong>方向（direction）</strong></h4>
+<ul>
+<li>
+<p>例如计算光照模型是，得到顶点的法线方向和光源方向</p>
+</li>
+<li>
+<p>单位向量也被称为<strong>归一化向量（normalized vector）</strong>，对于非零向量，转化为单位向量的过程就叫归一化</p>
+</li>
+<li>
+<p><strong>归一化</strong>
+        <img class="mx-auto" alt="image-20220509135113959" src="UnityShader.assets/image-20220509135113959.png" />   
+    </p>
+</li>
+<li>
+<p>零向量：v=(0,0,0)，不可以被归一化</p>
+</li>
+<li>
+<p>几何意义：
+        <img class="mx-auto" alt="image-20220509140325886" src="UnityShader.assets/image-20220509140325886.png" />   
+    </p>
+</li>
+<li>
+<p>当我们遇到<strong>法线方向</strong>，<strong>光源方向</strong>等，这些不一定是单位向量，在使用前应当<strong>归一化运算</strong></p>
+</li>
+</ul>
+<h4 id="5-矢量的点积dot-product内积inner-product">5. <strong>矢量的点积（dot product）内积（inner product）</strong></h4>
+<ol>
+<li>
+<p>$ a · b = (a_x, a_y, a_z) · (b_x, b_y, b_z) = a_x b_x+ a_y b_y+ a_z b_z $</p>
+</li>
+<li>
+<p>点积<strong>几何意义</strong>：<strong>投影（projection）</strong></p>
+</li>
+<li>
+<p>
+        <img class="mx-auto" alt="image-20220509145837083" src="UnityShader.assets/image-20220509145837083.png" />   
+    </p>
+</li>
+<li>
+<p>点积结果的符号让我们知道两个矢量的方向关系：计算两个向量的夹角</p>
+</li>
+<li>
+<p>性质</p>
+<ol>
+<li>
+        <img class="mx-auto" alt="image-20220509162618940" src="UnityShader.assets/image-20220509162618940.png" />   
+    </li>
+<li>从性质三，<strong>我们可以用叉积计算<!-- raw HTML omitted -->模<!-- raw HTML omitted --></strong>，一般，我们只想比较**<!-- raw HTML omitted -->模<!-- raw HTML omitted -->**大小，就不必开平方消耗性能了</li>
+</ol>
+</li>
+<li>
+<p>点积公式二：从三角代数出发，更具有几何意义</p>
+<ol>
+<li>$ 公式： a · b = |a||b| \cos \theta  $</li>
+<li>从单位向量 $\hat{a} · \hat{b}  = \cos\theta= \frac{直角边}{斜边}$</li>
+<li>
+<!-- raw HTML omitted -->
+</li>
+<li>
+        <img class="mx-auto" alt="image-20220514062109370" src="UnityShader.assets/image-20220514062109370.png" />   
+    </li>
+<li>$arcos$反余弦可求两个向量之间的角度</li>
+</ol>
+</li>
+</ol>
+<h4 id="6-矢量的叉积cross-product外积outerproduct">6. 矢量的叉积（cross product）外积（outerproduct）</h4>
+<ol>
+<li>叉积结果是一个向量(vector)公式如下
+        <img class="mx-auto" alt="image-20220514072216216" src="UnityShader.assets/image-20220514072216216.png" />   
+    
+<ol>
+<li>叉积不满足交换律$a \times b \neq b \times a$，</li>
+<li>不满足结合律$a \times (b \times c) \neq (a \times b) \times c$</li>
+<li>但是满足<strong>反交换律</strong> $a \times b = -(b \times a)$</li>
+<li>**几何意义：**两个矢量叉积结果=<strong>垂直</strong>这两个矢量的新向量
+<ol>
+<li>==新向量的模==：$ |a \times b = |a||b| \sin\theta$ （使用正弦sin）</li>
+<li>等价于平行四边形的面积公式：$S_{平行四边形}=|b|h= |b|(|a|\sin\theta) = |a||b|\sin\theta = |a \times b|$</li>
+<li>如果$a和b$ 平行，那么$a \times b = 零向量$ <!-- raw HTML omitted -->得到零向量，不是0<!-- raw HTML omitted --></li>
+<li>
+        <img class="mx-auto" alt="image-20220510115720181" src="UnityShader.assets/image-20220510115720181.png" />   
+    </li>
+<li>==新向量的方向==：$a \times b $ 结果的方向根据左手 右手坐标系，并不影响叉积计算</li>
+<li>最常见的应用：计算垂直 平面、三角形的矢量。</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<h3 id="433-练习">4.3.3 练习</h3>
+<h2 id="44矩阵">4.4矩阵</h2>
+<h3 id="441-矩阵定义">4.4.1 矩阵定义</h3>
+<p>$$
+M = \begin{bmatrix}
+1 &amp; 2 &amp; 3 &amp; 1 \
+4 &amp; 5 &amp; 6 &amp; 1 \
+7 &amp; 8 &amp; 9 &amp; 1 \
+\end{bmatrix}
+$$</p>
+<h3 id="442-矢量连接起来">4.4.2 矢量连接起来</h3>
+<ul>
+<li>矢量可以看做是$ n \times 1 $的列矩阵（column matrix）或者$1 \times n$的行矩阵（row matrix）</li>
+</ul>
+<h3 id="443-矩阵运算">4.4.3 矩阵运算</h3>
+<h4 id="1矩阵和标量的乘法">1.矩阵和标量的乘法</h4>
+<p>
+        <img class="mx-auto" alt="image-20220511101143798" src="UnityShader.assets/image-20220511101143798.png" />   
+    </p>
+<h4 id="2矩阵和矩阵的乘法">2.矩阵和矩阵的乘法</h4>
+<ol>
+<li>$r \times n$ 的矩阵A和 $n\times c$ 的矩阵B相乘，结果是一个 $r \times c$ 的矩阵</li>
+<li>A的 列 数量必须和B的 行 数量相同</li>
+<li>
+        <img class="mx-auto" alt="image-20220511105521053" src="UnityShader.assets/image-20220511105521053.png" />   
+    </li>
+<li>性质：不满足交换律$AB \neq BA$</li>
+<li>满足结合律：$A(BC) = (AB)C$，可以推广到$ABCDE = ((A(BC))D)E = (AB)(CD)E$</li>
+</ol>
+<h3 id="444-特殊的矩阵">4.4.4 特殊的矩阵</h3>
+<h4 id="1方块矩阵">1.方块矩阵</h4>
+<ol>
+<li>
+<p>指行列数目相等的矩阵</p>
+</li>
+<li>
+<p>具有特殊的 <strong>对角元素（diagonal elements）</strong>，指的是<!-- raw HTML omitted -->行号列号<!-- raw HTML omitted -->相等的元素，排布在矩阵的<strong>对角线</strong>上</p>
+</li>
+<li>
+<p>如果除了对角元素外，所有都是0，那么就叫做<strong>对角矩阵（diagonal matrix）</strong></p>
+<ol>
+<li>$$
+M = \begin{bmatrix}
+1 &amp; 0 &amp; 0&amp; 0 \
+0 &amp; 5 &amp; 0&amp; 0 \
+0 &amp; 0&amp; 9 &amp; 0 \
+0 &amp; 0 &amp; 0 &amp; 1 \
+\end{bmatrix}
+$$</li>
+</ol>
+</li>
+</ol>
+<h4 id="2单位矩阵">2.单位矩阵</h4>
+<ol>
+<li>
+<p>$$
+M = \begin{bmatrix}
+1 &amp; 0 &amp; 0&amp; 0 \
+0 &amp; 1 &amp; 0&amp; 0 \
+0 &amp; 0&amp; 1 &amp; 0 \
+0 &amp; 0 &amp; 0 &amp; 1 \
+\end{bmatrix}
+$$</p>
+</li>
+<li>
+<p>任何矩阵乘 单位矩阵 都不变 $MI=IM=M$</p>
+</li>
+</ol>
+<h4 id="3转制矩阵">3.转制矩阵</h4>
+<ol>
+<li><strong>转置矩阵(transposed matrix)</strong> 是对原矩阵运算，$r\times c$ 的$M$的转置表示成 $c\times r$ 的 $M^T$</li>
+<li>表示为$M_{ij}^T = M_{ji}^T$</li>
+<li>性质：
+<ol>
+<li>$(M^T)^T = M$</li>
+<li>$(AB)^T = B^TA^T$ ==重点==</li>
+</ol>
+</li>
+</ol>
+<h4 id="4逆矩阵">4.逆矩阵</h4>
+<ol>
+<li>矩阵有逆矩阵，首先要是个<strong>方阵</strong>，非零矩阵</li>
+<li>最重要的性质：$MM^{-1} = M^{-1}M = I$</li>
+<li>如果矩阵有逆矩阵，那他就是<strong>可逆的(invertible) 非奇异的(nonsingular)</strong>，</li>
+<li>没有逆矩阵则是 <strong>不可逆的（noninvertible） 奇异的（singular）</strong></li>
+<li><strong><!-- raw HTML omitted -->简单判断是否可逆<!-- raw HTML omitted --></strong>：方阵的**行列式（determinant）**不等于0。调用C++数学库Eigen</li>
+<li>重要性质：
+<ol>
+<li>$MM^{-1} = M^{-1}M = I$</li>
+<li>$(M^{-1})^{-1} = M$</li>
+<li>$I^{-1} = I$</li>
+<li>$(M^T)^{-1} = (M^{-1})^T$ 转置矩阵 的 逆矩阵 就是 逆矩阵的 转置</li>
+<li>$(AB)^{-1} = B^{-1}A^{-1}$
+<ol>
+<li>引申：$(ABCD)^{-1} = D^{-1}C^{-1}B^{-1}A^{-1}$</li>
+<li>逆矩阵==<strong>几何意义</strong>==：矩阵表示一个<!-- raw HTML omitted -->变换<!-- raw HTML omitted -->，逆矩阵就可以 <strong><!-- raw HTML omitted -->还原这个变换<!-- raw HTML omitted --></strong>，或者说 计算变换的 <!-- raw HTML omitted --><strong>反向变换</strong><!-- raw HTML omitted --></li>
+<li>可以通过结合律证明：$M^{-1}(Mv) = (M^{-1}M)v=Iv=v$</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<h4 id="5正交矩阵orthogonal-matrix">5.正交矩阵（orthogonal matrix）</h4>
+<ol>
+<li>
+<p>如果，<strong>方阵M</strong> 和 转置矩阵 相乘结果为 单位矩阵I，那么就是<strong>正交的（orthogonal）</strong></p>
+</li>
+<li>
+<p>$MM^T = M^TM = I$ 等价于 $M^T = M^{-1}$，转置矩阵 == 逆矩阵</p>
+</li>
+<li>
+<p><!-- raw HTML omitted --><strong>如何判断是不是正交矩阵？</strong><!-- raw HTML omitted -->直接判断$MM^T = I$ 过于消耗性能</p>
+<ol>
+<li>
+<p>
+        <img class="mx-auto" alt="image-20220511164530781" src="UnityShader.assets/image-20220511164530781.png" />   
+    </p>
+</li>
+<li>
+<p>
+        <img class="mx-auto" alt="image-20220511164948587" src="UnityShader.assets/image-20220511164948587.png" />   
+    </p>
+</li>
+<li>
+<p>满足上述条件就是<strong>正交矩阵</strong></p>
+<ol>
+<li>一组 <strong>标准正交基（两矢量相互垂直 &amp;&amp; 模为1）</strong> 精确满足上述条件</li>
+<li>若这些 基矢量是一组<strong>标准正交基</strong>，就可以直接转置矩阵求逆矩阵</li>
+<li>复习<strong>正交基</strong>和<strong>标准正交基</strong>：一个坐标空间要指定一组基矢量（也就是坐标轴），若这些 <strong>基矢量</strong>相互垂直，则是一组 <strong>正交基（orthogonal basis）</strong>，若它们 模 = 1，则是 <strong>标准正交基（orthonormal basis）</strong></li>
+<li>因此，<!-- raw HTML omitted --><strong>正交矩阵</strong>的 行 和 列 分别构成了一组 标准正交基<!-- raw HTML omitted --></li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<h3 id="445-行矩阵还是列矩阵矩阵变换-左乘-右乘问题">4.4.5 行矩阵还是列矩阵(矩阵变换 左乘 右乘问题)</h3>
+<ol>
+<li>将一个 矢量 转换为 行矩阵或者 列矩阵 是<!-- raw HTML omitted -->没有区别<!-- raw HTML omitted -->的
+<ol>
+<li>但是若是和<!-- raw HTML omitted -->矩阵相乘<!-- raw HTML omitted -->，就会出现<!-- raw HTML omitted -->差异<!-- raw HTML omitted --></li>
+<li>
+        <img class="mx-auto" alt="image-20220511173304305" src="UnityShader.assets/image-20220511173304305.png" />   
+    </li>
+<li>$向量v和\ M相乘，Mv和vM差别巨大$</li>
+</ol>
+</li>
+<li>在Unity中，通常将矢量放在<!-- raw HTML omitted --><strong>矩阵右侧，$v$转 列矩阵 计算</strong><!-- raw HTML omitted -->（也就是<strong>右乘</strong>）
+<ol>
+<li>例如$CBAv = (C(B(Av)))$</li>
+<li>如果是左乘：等价于 $vA^TB^TC^T = (((vA^T)B^T)C^T)$</li>
+</ol>
+</li>
+</ol>
+<h2 id="45-矩阵的几何意义变换">4.5 矩阵的几何意义：变换</h2>
+<p>**变换（transform）**表示我们把一些数据，点，矢量，颜色等转换的过程。</p>
+<ol>
+<li>
+<p><strong>线性变换（linear transform）</strong>：可以保留 
+$$
+矢量加： f(x)+f(y)=f(x+y) \
+标量乘： kf(x) = f(kx)
+$$
+的变换</p>
+<ol>
+<li>线性变换包含，旋转，缩放，<strong>错切(shear)，镜像(mirror，reflection)，正交投影（orthographic projection）</strong></li>
+<li>仅有线性变换不行，如平移变换 ,满足标量乘法，不满足矢量加法。所以不能用一个3*3的矩阵表示平移变换。</li>
+<li>如此就有了<strong>仿射变换( affine transform)</strong>，其合并了 <strong>线性变换</strong> 和 <strong>平移变换</strong> 的变换类型，使用4*4矩阵表示，将矢量扩展到 <!-- raw HTML omitted -->四维空间<!-- raw HTML omitted --> 下，这就是 <strong>齐次坐标空间（homogeneous space）</strong></li>
+</ol>
+</li>
+<li>
+<p>
+        <img class="mx-auto" alt="image-20220511205446643" src="UnityShader.assets/image-20220511205446643.png" />   
+    </p>
+<ol>
+<li>从中可看出，<strong><!-- raw HTML omitted -->旋转，镜像<!-- raw HTML omitted --></strong> 变换矩阵，因为是<strong>正交矩阵</strong> 只需要转置一下，就能逆运算</li>
+</ol>
+</li>
+</ol>
+<h3 id="452-齐次坐标-homogeneous-coordinate">4.5.2 齐次坐标 homogeneous coordinate</h3>
+<ul>
+<li>3 * 3矩阵无法表示平移操作，扩展到4 * 4矩阵</li>
+<li>对于<!-- raw HTML omitted -->点Point<!-- raw HTML omitted --> ，将其$w$分量设为1，对于<!-- raw HTML omitted -->矢量Vector<!-- raw HTML omitted -->，将其$w$ 设为0。</li>
+<li>这样可以使**操作矢量的时候，平移被忽略*</li>
+</ul>
+<h3 id="453-分解基础变换矩阵">4.5.3 分解基础变换矩阵</h3>
+<p>
+        <img class="mx-auto" alt="image-20220511213032812" src="UnityShader.assets/image-20220511213032812.png" />   
+    </p>
+<h3 id="454-平移矩阵">4.5.4 平移矩阵</h3>
+<ol>
+<li>
+        <img class="mx-auto" alt="image-20220511213802724" src="UnityShader.assets/image-20220511213802724.png" />   
+    </li>
+<li>
+        <img class="mx-auto" alt="image-20220511213820374" src="UnityShader.assets/image-20220511213820374.png" />   
+    </li>
+<li>可以看出点可以被平移，矢量因为平移无意义，所以即使平移变换后也没用</li>
+<li>
+        <img class="mx-auto" alt="image-20220511214058384" src="UnityShader.assets/image-20220511214058384.png" />   
+    </li>
+</ol>
+<h3 id="455-缩放矩阵">4.5.5 缩放矩阵</h3>
+<ol>
+<li>对模型缩放：
+        <img class="mx-auto" alt="image-20220511222401640" src="UnityShader.assets/image-20220511222401640.png" />   
+    </li>
+<li>对矢量缩放：
+        <img class="mx-auto" alt="image-20220511223436367" src="UnityShader.assets/image-20220511223436367.png" />   
+    </li>
+<li>如果缩放系数是$k_x = k_y=k_z$ 则是 <strong>统一缩放（uniform scale）</strong>
+<ol>
+<li>扩大整个模型，不改变角度和比例信息</li>
+</ol>
+</li>
+<li>否则是 <strong>非统一缩放（nonuniform scale）</strong>
+<ol>
+<li>积压 拉伸 模型，改变角度和比例信息</li>
+<li>比如对<!-- raw HTML omitted -->法线变换<!-- raw HTML omitted -->时，有非统一缩放，直接<!-- raw HTML omitted -->变换顶点<!-- raw HTML omitted -->会出错</li>
+</ol>
+</li>
+<li>逆矩阵，反向操作，一般不是正交矩阵
+        <img class="mx-auto" alt="image-20220511230439701" src="UnityShader.assets/image-20220511230439701.png" />   
+    </li>
+<li>上述<strong>只用于 沿坐标轴方向</strong>进行缩放，若我们希望 <strong>任意方向缩放</strong>，就需要复合变换，比如将 缩放轴变成标准坐标轴，沿着坐标轴缩放。</li>
+</ol>
+<h3 id="456-旋转矩阵">4.5.6 旋转矩阵</h3>
+<ol>
+<li>
+        <img class="mx-auto" alt="image-20220511230806085" src="UnityShader.assets/image-20220511230806085.png" />   
+    </li>
+<li>
+        <img class="mx-auto" alt="image-20220511230815888" src="UnityShader.assets/image-20220511230815888.png" />   
+    </li>
+<li>逆矩阵：<strong><!-- raw HTML omitted -->旋转矩阵是正交矩阵<!-- raw HTML omitted --></strong>，多个旋转矩阵间的串联同样是正交的</li>
+</ol>
+<h3 id="457-复合变换">4.5.7 复合变换</h3>
+<ol>
+<li>将平移、旋转、缩放组合起来形成复杂变换。</li>
+<li>大多数情况，约定顺序是 <strong>1.缩放，2.旋转，3.平移</strong> ==一定要注意顺序==</li>
+<li>$P_{new} = M_{translate} M_{rotation} M_{scale\theta}P_{old}$
+<ol>
+<li>针对y轴：
+        <img class="mx-auto" alt="image-20220511232547701" src="UnityShader.assets/image-20220511232547701.png" />   
+    </li>
+<li>如果变换顺序，矩阵就会出错
+        <img class="mx-auto" alt="image-20220511232655370" src="UnityShader.assets/image-20220511232655370.png" />   
+    </li>
+</ol>
+</li>
+<li>==旋转顺序也是至关重要==，若同时绕三个轴旋转，是如何旋转顺序的？
+<ol>
+<li>当我们自己给出$(\theta_x,\theta_y,\theta_z)$时，需要自己定义一个旋转顺序</li>
+<li>Unity中，这个顺序是，<strong>Z X Y</strong></li>
+<li>
+        <img class="mx-auto" alt="image-20220511234343241" src="UnityShader.assets/image-20220511234343241.png" />   
+    </li>
+<li>unity文档表示是第一种情况，我们发现 情况一的 <strong>Z X Y</strong> 和情况二的 <strong>Y X Z</strong>一样</li>
+</ol>
+</li>
+</ol>
+<h2 id="46-坐标空间">4.6 坐标空间</h2>
+<p>顶点着色器 最基本的功能 就是把 <strong>模型</strong>的<strong>顶点坐标</strong>从<strong>模型空间</strong>转换到<strong>齐次裁剪坐标空间</strong>，渲染游戏可以理解成把 一个个顶点 经过层层处理，最终转化到屏幕上的过程。</p>
+<h3 id="461-为什么要用这么多不同的坐标空间">4.6.1 为什么要用这么多不同的坐标空间</h3>
+<ul>
+<li>开发过程 不可以 抛弃不同的坐标空间，所有坐标空间理论平等。</li>
+</ul>
+<h3 id="462-坐标空间的变换">4.6.2 坐标空间的变换</h3>
+<ol>
+<li>
+<p>定义一个坐标空间：定要指明 原点位置，三个坐标轴方向。这些是相对于另一个坐标空间的</p>
+<ol>
+<li>坐标空间有层次结构，每个坐标空间都是 另一个坐标空间的 <strong>子空间</strong></li>
+<li>坐标空间变换实际上就是，父空间 和 子空间 的变换</li>
+<li>假设：父空间 <strong>P</strong> 和子空间 <strong>C</strong> ,一般会有两种需求：
+<ol>
+<li>子空间点或矢量 $A_C$转换到父空间下表示 $A_P$：$A_P=M_{C \rightarrow P}A_C$</li>
+<li>父空间点或矢量 $A_P$ 转换到子空间下表示 $A_C$：$A_C=M_{P \rightarrow C}A_P$</li>
+<li>$M_{C \rightarrow P} $ 和 $M_{P \rightarrow C}$是逆矩阵</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>
+<p>如何求 <strong>子空间</strong> 到 <strong>父空间</strong> 的 变换矩阵 $M_{C \rightarrow P}$</p>
+<ol>
+<li>
+        <img class="mx-auto" alt="image-20220512143707352" src="UnityShader.assets/image-20220512143707352.png" />   
+    </li>
+<li>上述步骤是我们想象，实际上点没动，坐标空间的变换就在这四个步骤上。</li>
+<li>子坐标空间：$C$ 的<strong>3个坐标轴</strong>，在父坐标空间$P$ 下表示为 $x_C\ y_C\ z_C$ ，原点位置$O_C$</li>
+<li>给定一个子子坐标空间中一点 $A_C = (a,b,c)$，依照上四个步骤确定$A_P$</li>
+<li>
+        <img class="mx-auto" alt="image-20220512171607695" src="UnityShader.assets/image-20220512171607695.png" />   
+    </li>
+<li>
+        <img class="mx-auto" alt="image-20220512172410601" src="UnityShader.assets/image-20220512172410601.png" />   
+    </li>
+<li>添加平移变换，扩展到齐次坐标空间：
+        <img class="mx-auto" alt="image-20220512212723338" src="UnityShader.assets/image-20220512212723338-16523626751801.png" />   
+    
+<ol>
+<li>将<strong>三个坐标轴</strong>放入矩阵前三列</li>
+<li>将$O_C$<strong>原点矢量</strong>放在最后一列</li>
+<li>记得转化齐次坐标空间</li>
+</ol>
+</li>
+<li>求出 $M_{C\rightarrow P}$ 之后，求 <strong>逆矩阵</strong> 就可以求出 $M_{P\rightarrow C}$</li>
+<li>我们不要求 3个坐标轴  $x_C\ y_C\ z_C$ 是单位矢量。若有缩放，三个矢量很可能不是单位矢量</li>
+</ol>
+</li>
+<li>
+<p>可以反向思维，从上述变换矩阵，反推 获取 子坐标空间的<strong>原点</strong> 和<strong>坐标轴方向</strong></p>
+<ol>
+<li>如：知道 <strong>模型空间</strong> 到 <strong>世界空间</strong> 的 $4 \times 4$的变换矩阵，取第一列 <strong>归一化</strong>，取得 模型空间的 <strong>x轴</strong> 在 世界空间 得单位矢量表示。也可得到 y、z轴</li>
+<li>因为$M_{C \rightarrow P}$ 可以把一个方向矢量从 坐标空间C，变换到P</li>
+<li>所以，只需要用 $M_{C \rightarrow P}$ 变换 空间C 中的 X轴(1,0,0,0)，使用 $M_{C \rightarrow P}[1\ 0\ 0\ 0]^T$, 得到的结果正是 $M_{C \rightarrow P}$ 第一列</li>
+</ol>
+</li>
+<li>
+<p><strong>矢量的坐标空间变换</strong>：矢量没有位置，因此 坐标空间的 <strong>原点变换可以忽略</strong>，不需要<strong>平移变换</strong></p>
+<ol>
+<li>
+        <img class="mx-auto" alt="image-20220513150020338" src="UnityShader.assets/image-20220513150020338.png" />   
+    </li>
+<li>shader中，常常看到，截取变换矩阵 <strong>前3行 前3列</strong>对 <!-- raw HTML omitted -->法线方向，光照方向<!-- raw HTML omitted -->进行空间变换，这就是原因</li>
+</ol>
+</li>
+<li>
+<p>再看回$M_{P \rightarrow C}$ , 除了求$M_{C \rightarrow P}$ 的逆矩阵之外，如果$M_{C \rightarrow P}$ 是 <strong>正交矩阵</strong>，只需要<strong>转置</strong>，便可以取得$M_{P \rightarrow C}$</p>
+<ol>
+<li>
+        <img class="mx-auto" alt="image-20220513150434942" src="UnityShader.assets/image-20220513150434942.png" />   
+    </li>
+<li><strong>正交矩阵</strong> 情况下，P空间的 $x_P\ y_P\ z_P$ 直接就是$M_{C \rightarrow P}$ 的每一行</li>
+<li>上图可看出规律，坐标轴摆放 <strong>列</strong> 和 <strong>转换前 的空间</strong> 一致</li>
+</ol>
+</li>
+<li>
+<p>验算：验证坐标轴摆放是按列 还是 按行</p>
+<ol>
+<li>例： 矢量 从 $A \rightarrow B$ 知道 B的 $X_B\ Y_B\ Z_B$, 想要知道 $M_{A \rightarrow B}$
+<ol>
+<li>从上图规律可以看出，如果  $M_{A \rightarrow B}$ 是<strong>正交矩阵</strong>，$X_B\ Y_B\ Z_B$ 分别是  $M_{A \rightarrow B}$ 的 <strong>每一行</strong></li>
+<li>那么如果如此摆放：
+        <img class="mx-auto" alt="image-20220513154902982" src="UnityShader.assets/image-20220513154902982.png" />   
+    </li>
+<li>这个矩阵结果应该就是(1,0,0)
+        <img class="mx-auto" alt="image-20220513154952901" src="UnityShader.assets/image-20220513154952901.png" />   
+    </li>
+<li>但是实际上应该是
+        <img class="mx-auto" alt="image-20220513155044926" src="UnityShader.assets/image-20220513155044926.png" />   
+    </li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<h3 id="463-顶点的坐标空间变换过程">4.6.3 顶点的坐标空间变换过程</h3>
+<p>一个顶点是如何从 <strong>模型空间</strong> 转换到 <strong>屏幕空间的</strong>，经过了数个坐标空间</p>
+<p>
+        <img class="mx-auto" alt="image-20220513165204939" src="UnityShader.assets/image-20220513165204939.png" />   
+    </p>
+<h3 id="464-模型空间model-space">4.6.4 模型空间(model space)</h3>
+<ol>
+<li>也被称为 <strong>对象空间(object space) 局部空间(local space)</strong></li>
+<li>每个<strong>模型</strong>都有自己独立的坐标空间，当 <strong>模型</strong>变换的时候，<strong>模型空间</strong>也会跟着<strong>变换</strong>
+<ol>
+<li>（当我们自己转身的时候，我们的前后左右也在跟着自己变）</li>
+</ol>
+</li>
+<li>方向概念 <strong>前forward 后back 左left 右right 上up 下down</strong>，本书将其称为自然方向</li>
+<li>Unity是 <strong>左手坐标系</strong> 模型空间的 原点和坐标轴通常在建模软件中确定，导入Unity中后，可以在<strong>顶点着色器</strong>中访问到模型的顶点信息。</li>
+<li>每个<strong>模型</strong> 都有一个<strong>模型坐标空间</strong> 时刻跟着他
+<ol>
+<li>
+        <img class="mx-auto" alt="image-20220513172933062" src="UnityShader.assets/image-20220513172933062.png" />   
+    </li>
+</ol>
+</li>
+</ol>
+<h3 id="465-世界空间-world-space">4.6.5 世界空间 world space</h3>
+<ol>
+<li>建立了我们关心的<strong>最大空间</strong>，在游戏中可以描述 <strong>绝对位置</strong>，指的就是世界坐标位置，通常将原点放在游戏空间中心</li>
+<li>==Unity中== 世界空间也用 左手坐标系，X，Y，Z轴固定不变，
+<ol>
+<li>我们可以调整<strong>Transform</strong>组件中的<strong>Position</strong>属性改变模型位置，</li>
+<li>这里 <strong>Position</strong> 是相对于Transform的**父节点(parent)**的 <strong>模型坐标空间</strong>的原点定义的</li>
+<li>如果没有 <strong>父节点</strong> 那么 <strong>Postion</strong>就是世界坐标系的 位置</li>
+<li>
+        <img class="mx-auto" alt="image-20220516104939405" src="UnityShader.assets/image-20220516104939405.png" />   
+    </li>
+</ol>
+</li>
+<li>==顶点变换1== 将顶点坐标 从 模型空间 变换到 世界空间中，叫 <strong>模型变换（model transform）</strong>
+<ol>
+<li>
+        <img class="mx-auto" alt="image-20220516105900835" src="UnityShader.assets/image-20220516105900835.png" />   
+    </li>
+<li>从上图信息，我们知道<strong>世界空间</strong>中，<strong>Scale:(2,2,2) Rotation(0,150,0)Position(5,0,25)</strong></li>
+<li>变换顺序不可变：<strong>1.缩放 2.旋转 3.平移</strong></li>
+<li>
+        <img class="mx-auto" alt="image-20220516110353695" src="UnityShader.assets/image-20220516110353695.png" />   
+    </li>
+</ol>
+</li>
+</ol>
+<h3 id="466-观察空间-view-space">4.6.6 观察空间 （View space）</h3>
+<ol>
+<li>也被称为 <strong>摄像机空间（Camera space）</strong>，可以认为是 <strong><!-- raw HTML omitted -->模型空间的一个特例<!-- raw HTML omitted --></strong>：所以模型中，有一个非常特殊的模型，就是<strong>摄像机</strong>，所以他的模型空间，也就是观察空间，值得讨论
+<ol>
+<li>Unity用左手坐标系，Unity的Camera是<strong>右手坐标系</strong>，符合OpenGL</li>
+<li>Camera +x指向右边，+y指向上方，-z指向前方</li>
+<li><code>Camera.cameraToWorldMatrix</code>和<code>Camera.worldToCameraMatrix</code>计算观察空间中的位置，需要注意这些差异</li>
+</ol>
+</li>
+<li><strong>观察空间</strong> 和 <strong>屏幕空间</strong> 不一样，前者三维空间，后者二维空间，二者之间需要 **投影（projection）**操作</li>
+<li>==顶点变换2== 顶点坐标从 <strong>世界空间</strong> 到 <strong>观察空间</strong> <strong>叫做观察变换（view transform)</strong>
+<ol>
+<li>
+        <img class="mx-auto" alt="image-20220516114340181" src="UnityShader.assets/image-20220516114340181.png" />   
+    </li>
+<li>两种方法，第一种就是之前的 <strong>模型变换</strong>提到的方法，构建 模型空间到世界空间<strong>变换矩阵</strong>，再<strong>求逆</strong> 得到<strong>世界空间</strong>到<strong>观察空间</strong>的 变换矩阵</li>
+<li>第二种：想象平移整个观察空间，<!-- raw HTML omitted -->摄像机原点 移到 世界坐标的原点，坐标轴和 世界空间的 坐标轴 <strong>重合</strong><!-- raw HTML omitted -->
+<ol>
+<li>由camera<!-- raw HTML omitted -->当前<!-- raw HTML omitted -->的transform组件，得知<strong>先旋转(30,0,0)，后平移(0,10,-10)</strong>，为了把camera和世界空间坐标轴重合，逆向变换，<strong>先反方向平移(0,-10,10)，后反方向旋转(-30,0,0)</strong></li>
+<li>
+        <img class="mx-auto" alt="image-20220516145354064" src="UnityShader.assets/image-20220516145354064.png" />   
+    </li>
+<li>观察空间是<strong>右手坐标系</strong>，对Z轴进行取反操作</li>
+<li>
+        <img class="mx-auto" alt="image-20220516145457855" src="UnityShader.assets/image-20220516145457855.png" />   
+    </li>
+<li>
+        <img class="mx-auto" alt="image-20220516145517184" src="UnityShader.assets/image-20220516145517184.png" />   
+    </li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<h3 id="467-裁剪空间-clip-space">4.6.7 裁剪空间 clip space</h3>
+<ol>
+<li>==顶点变换3== 裁剪空间clip space 也被称为 <strong>齐次裁剪空间</strong>，变换矩阵叫裁剪矩阵，也被称为 <strong>投影矩阵（projection matrix）</strong></li>
+<li><strong>目标：</strong> 方便地对 渲染图元进行裁剪。
+<ol>
+<li><strong>完全在空间内部</strong>的图元将会被保留</li>
+<li><strong>完全位于图外</strong>的图元会被剔除</li>
+<li><strong>与空间边界相交</strong>的图元被裁减。</li>
+<li>这块空间由 **视锥体（view frustum）**决定</li>
+<li>视锥体决定了摄像机可以看到的空间。由 六个平面包围，这些平面被称为 <strong>裁剪平面（clip planes）</strong></li>
+</ol>
+</li>
+<li>视锥体两种类型：<strong>正交投影（orthographic projection）透视投影（perspective projection）</strong>
+<ol>
+<li>
+        <img class="mx-auto" alt="image-20220516172811235" src="UnityShader.assets/image-20220516172811235.png" />   
+    </li>
+<li>有两块裁剪平面很特殊：<strong>近裁剪平面（near clip plane）远裁剪平面（far clip plane）</strong>。决定了摄像机可以看到的深度范围。</li>
+<li>
+        <img class="mx-auto" alt="image-20220516173550477" src="UnityShader.assets/image-20220516173550477.png" />   
+    </li>
+</ol>
+</li>
+<li>投影矩阵两个目的：（投影指空间降维）
+<ol>
+<li><strong>为投影做准备</strong>，他没有真正做投影，而是做准备，<strong>真正的投影在齐次除法（homogeneous division）</strong> 经过<!-- raw HTML omitted -->投影矩阵后<!-- raw HTML omitted --> 顶点的 $\omega$ 分量会有意义</li>
+<li><strong>对x、y、z 分量进行缩放</strong>。上面说用6个裁剪平面裁剪很麻烦，经过投影矩阵的缩放，可以直接使用 <strong>$\omega$ 分量作为一个范围值</strong>，如果x、y、z 都在范围内，说明在裁剪空间中</li>
+</ol>
+</li>
+</ol>
+<h4 id="1透视投影">1.透视投影</h4>
+<p>
+        <img class="mx-auto" alt="image-20220516203054780" src="UnityShader.assets/image-20220516203054780.png" />   
+    </p>
+<ul>
+<li>从Camera组件的**Field of View（FOV）**属性改变视锥体角度</li>
+<li>Clipping Planes 代表 <!-- raw HTML omitted -->近裁剪平面 远裁剪平面<!-- raw HTML omitted -->距离摄像机远近，</li>
+</ul>
+<ol>
+<li>
+<p>由此求出 远裁剪平面 近裁剪平面 <strong>高度</strong>（垃圾学渣补充了个过程，一眼看不出来）</p>
+<ol>
+<li>$$
+\frac{0.5*nearClipPlaneHeight}{Near} = \tan{\frac{FOV}{2}} \
+nearClipPlaneHeight = 2 · Near· \tan \frac{FOV}{2} \
+farClipPlaneHeight = 2 · Far· \tan \frac{FOV}{2}
+$$</li>
+</ol>
+</li>
+<li>
+<p>缺乏横向信息，Unity中可通过 <strong>Gamera.aspect</strong> 修改摄像机<strong>宽高比</strong>计算</p>
+<ol>
+<li>$$
+Aspect = \frac{neraClipPlaneWidth}{neraClipPlaneWidth} \
+Aspect = \frac{farClipPlaneWidth}{farClipPlaneWidth} 
+$$</li>
+</ol>
+</li>
+<li>
+<p>透视投影矩阵如下：
+        <img class="mx-auto" alt="image-20220516222055293" src="UnityShader.assets/image-20220516222055293.png" />   
+    </p>
+</li>
+<li>
+<p>Unity中，我们针对的<strong>观察空间</strong> 是 <strong>右手坐标系</strong>， 列矩阵在矩阵右侧相乘，</p>
+</li>
+<li>
+<p>变换后 Z 的分量将在$[-\omega, \omega]$之间，DirectX的API中，Z范围在$[0, \omega]$之间</p>
+</li>
+<li>
+<p>
+        <img class="mx-auto" alt="image-20220516222421808" src="UnityShader.assets/image-20220516222421808.png" />   
+    </p>
+</li>
+<li>
+<p>**透视矩阵本质：**便是对 x、y、z 分量进行缩放，Z分量还做了一个平移</p>
+</li>
+<li>
+<p><strong>目的</strong>：是为了方便裁剪</p>
+</li>
+<li>
+<p>此时顶点的 $\omega$ 分量，从 1 变成了 z 分量取反 之后的结果</p>
+</li>
+<li>
+<p>按照如下不等式可以判断顶点是否在视锥体内：</p>
+<ol>
+<li>$$
+-\omega &lt;= x &lt;= \omega\
+-\omega &lt;= y &lt;= \omega\
+-\omega &lt;= z &lt;= \omega
+$$</li>
+</ol>
+</li>
+<li>
+<p>
+        <img class="mx-auto" alt="image-20220516223344057" src="UnityShader.assets/image-20220516223344057.png" />   
+    </p>
+</li>
+<li>
+<p>图中标注关键4点，四个分量发生了变化</p>
+</li>
+<li>
+<p>并且空间从右手变成了左手坐标系，Z值越大，离摄像机越远</p>
+</li>
+</ol>
+<h4 id="2正交投影">2.正交投影</h4>
+<p>
+        <img class="mx-auto" alt="image-20220516224332749" src="UnityShader.assets/image-20220516224332749.png" />   
+    </p>
+<ol>
+<li>
+<p>Camera组件中 <strong>Size</strong> 是竖直高度的一半，Near Far控制远近平面距离</p>
+<ol>
+<li>
+<p>求出高度
+$$
+nearClipPlaneHeight = 2·Size \
+farClipPlaneHeight = nearClipPlaneHeight
+$$</p>
+</li>
+<li>
+<p>得到摄像机横纵比：<strong>Aspect</strong>
+$$
+nearClipPlaneWidth = Aspect · nearClipPlaneHeight \
+farClipPlaneHeight = nearClipPlaneHeight
+$$</p>
+</li>
+<li>
+<p>确定正交投影矩阵，建立在Unity对坐标系假定上的：
+        <img class="mx-auto" alt="image-20220517092935364" src="UnityShader.assets/image-20220517092935364.png" />   
+    </p>
+</li>
+<li>
+<p>
+        <img class="mx-auto" alt="image-20220517093038089" src="UnityShader.assets/image-20220517093038089.png" />   
+    </p>
+</li>
+<li>
+<p>正交投影的 $\omega$ 分量依旧是1</p>
+</li>
+<li>
+<p>==区别==：最后一行上：透视投影 [0 0 -1 0] 正交投影 [0 0 0 1] <strong>为齐次除法做准备</strong></p>
+</li>
+<li>
+<p>
+        <img class="mx-auto" alt="image-20220517101842981" src="UnityShader.assets/image-20220517101842981.png" />   
+    </p>
+</li>
+<li>
+<p>
+        <img class="mx-auto" alt="image-20220517101948234" src="UnityShader.assets/image-20220517101948234.png" />   
+    </p>
+</li>
+<li>
+<p>
+        <img class="mx-auto" alt="image-20220517102004999" src="UnityShader.assets/image-20220517102004999.png" />   
+    </p>
+</li>
+<li>
+<p>
+        <img class="mx-auto" alt="image-20220517102017981" src="UnityShader.assets/image-20220517102017981-16527540195671.png" />   
+    </p>
+</li>
+<li>
+<p>判断是否需要裁减
+        <img class="mx-auto" alt="image-20220517102052422" src="UnityShader.assets/image-20220517102052422.png" />   
+    </p>
+</li>
+</ol>
+</li>
+</ol>
+<h3 id="468-屏幕空间">4.6.8 屏幕空间</h3>
+<p>==顶点变换4== ：完成了所有裁剪工作，就可以<strong>真正的投影</strong>了：<!-- raw HTML omitted -->将视锥体投影到 <strong>屏幕空间（screen space）</strong><!-- raw HTML omitted --></p>
+<ul>
+<li>我们将得到真正的像素位置，而不是虚拟的三维坐标</li>
+</ul>
+<ol>
+<li>
+<p>屏幕空间是一个二维空间，这个过程有两个步骤：</p>
+<ol>
+<li>
+<p>标准 <strong>齐次除法（homogeneous division）<strong>也被称为</strong>透视除法（perspective division）</strong>：其实就是用 $\omega$ 分量，除以 $x,y,z$ 分量</p>
+<ol>
+<li>OpenGL中，得到坐标叫做 <strong>归一化的设备坐标（Normallized Device Coordinates， NDC）</strong></li>
+<li>经过 <strong>齐次除法</strong> 后，变换到一个<strong>立方体</strong>内</li>
+<li>OpenGL标准： $x,y,z$ 分量范围[-1 , 1] <strong>Unity使用</strong></li>
+<li>DirectX中， $x,y$ 分量范围[-1 , 1]，$z$ 分量范围[0 , 1]</li>
+<li>
+        <img class="mx-auto" alt="image-20220517111541864" src="UnityShader.assets/image-20220517111541864.png" />   
+    </li>
+<li>齐次除法对正交投影没有影响，因为 $\omega$ 分量是1
+        <img class="mx-auto" alt="image-20220517111604296" src="UnityShader.assets/image-20220517111604296.png" />   
+    </li>
+</ol>
+</li>
+<li>
+<p>齐次除法后，根据变换后的 x 和 y 坐标 <strong>映射输出 窗口对应的像素坐标</strong></p>
+<ol>
+<li>Unity中 <strong>左下（0,0）右上坐标（pixelWidth，PixelHeight）</strong></li>
+<li>现在的 x，y 坐标<strong>范围都在[1,-1]</strong></li>
+</ol>
+</li>
+<li>
+<p>齐次除法和屏幕映射过程见下面公式：</p>
+<ol>
+<li>
+<p>$$
+screen_x = \frac{clip_x · pixelWidth}{2·clip_w}+\frac{pixelWidth}{2} \
+screen_y = \frac{clip_y · pixelWidth}{2·clip_w}+\frac{pixelWidth}{2}
+$$</p>
+</li>
+<li>
+<p>Z 分量 通常用于 <strong>深度缓存中</strong>，传统方法是直接把 $\frac{clip_z}{Clip_{\omega}}$ <strong>存入深度缓存</strong>中。驱动生产商会选择最优存储格式</p>
+</li>
+<li>
+<p>$Clip_{\omega}$也不会被抛弃，他完成了主要工作——<strong>齐次除法中作为分母得到NDC</strong></p>
+</li>
+<li>
+<p>但他在后续还有重要作用：<strong>透视矫正差值</strong></p>
+</li>
+</ol>
+</li>
+<li>
+<p>Unity中，<strong>裁剪空间</strong>到屏幕空间的转换，是unity完成的，顶点着色器只需要把顶点转换到 <strong>裁剪空间</strong>即可</p>
+</li>
+<li>
+<p>裁剪空间中鼻子位置：<strong>（11.691， 15.311， 23.692， 27.31）</strong>，设屏幕像素宽度400，高度300</p>
+<ol>
+<li>齐次除法，裁剪空间坐标投影到NDC中，再映射屏幕过程如下</li>
+<li>
+        <img class="mx-auto" alt="image-20220517120117933" src="UnityShader.assets/image-20220517120117933.png" />   
+    </li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<h3 id="469-总结">4.6.9 总结</h3>
+<ol>
+<li><strong>顶点着色器</strong> 最基本任务 把顶点坐标从 模型空间 转换到 裁剪空间，对应前三个变换过程</li>
+<li><strong>片元着色器</strong> 通常可以得到该片元 在屏幕空间的像素位置。</li>
+<li>此处只给出<strong>一些最重要的坐标空间</strong>，还有开发中遇到的其他空间，如 **切线空间（tangent space）**通常用于 <strong>法线映射</strong></li>
+<li>
+        <img class="mx-auto" alt="image-20220517145612312" src="UnityShader.assets/image-20220517145612312.png" />   
+    </li>
+</ol>
+<h2 id="47-法线变换">4.7 法线变换</h2>
+<ul>
+<li>
+<p><strong>法线（normal）<strong>也被称为 <strong>法矢量（normal vector）<strong>当我们变换顶点的时候，还需要变换</strong>顶点法线</strong>，以用于后续</strong>计算光照</strong>等（片元着色器）</p>
+</li>
+<li>
+<p>**切线（tangent）**顶点携带的另一种信息，通常和纹理空间对齐，与法线方向垂直</p>
+<ul>
+<li>
+<p><strong>切线是两个顶点之间的插值计算</strong>得到的，我们可 <strong>直接使用变换顶点的 变换矩阵 变换切线（tangent）</strong></p>
+</li>
+<li>
+<p>使用 3*3 的变换矩阵（因为是向量，不考虑平移）可以得到变换后的 <strong>切线方向</strong>
+$$
+T_B =M_{A\rightarrow B}T_A
+$$</p>
+</li>
+<li>
+<p>但是 <strong>法线就不行了</strong> 直接用 $M_{A\rightarrow B}$ 变换的可能不与表面垂直</p>
+</li>
+<li>
+<p>
+        <img class="mx-auto" alt="image-20220517154425939" src="UnityShader.assets/image-20220517154425939.png" />   
+    </p>
+</li>
+</ul>
+</li>
+<li>
+<p>用 <strong>数学约束条件</strong> 推出矩阵：</p>
+<ol>
+<li>
+<p>同一个顶点的切线 $T_A$ 和法线 $N_A$ 必须满足垂直条件:$ T_A · N_A = 0$</p>
+</li>
+<li>
+<p>$T_B =M_{A\rightarrow B}T_A$ , 需找到矩阵G变换法线 $N_A$​ , 使得变换后的<strong>法线和切线垂直</strong>
+$$
+T_A · N_A = (M_{A\rightarrow B }T_A)·(G \  N_A) = 0
+$$</p>
+</li>
+<li>
+<p>
+        <img class="mx-auto" alt="image-20220517155235683" src="UnityShader.assets/image-20220517155235683.png" />   
+    </p>
+</li>
+<li>
+<p>$$
+G = (M_{A\rightarrow B }^T)^{-1} = (M_{A\rightarrow B }^{-1})^T
+$$</p>
+</li>
+<li>
+<p>==法线变换重点==：</p>
+<ol>
+<li>如果变换矩阵 $M_{A\rightarrow B }$  是<strong>正交矩阵</strong>，那么$M_{A\rightarrow B}^{-1} =M_{A\rightarrow B }^T$ , <strong>变换顶点的 变换矩阵 可以直接 变换法线</strong>
+<ol>
+<li>如果 <strong>只有旋转变换</strong>，就是<strong>正交矩阵</strong></li>
+<li>如果 <strong>只有旋转 和 统一缩放</strong>，就使用 <strong>统一缩放系数k</strong>变换矩阵：$ (M_{A\rightarrow B}^T)^{-1} = \frac{1}{k} M_{A\rightarrow B}$  以此避免求逆矩阵</li>
+<li>如果<strong>带有非统一变换</strong> 就老老实实求逆矩阵吧</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+</ul>
+<h2 id="48-unity-shader-内置变量数学篇">4.8 Unity Shader 内置变量（数学篇）</h2>
+<p>可以在 UnityShaderVariables.cginc 文件中找到定义说明</p>
+<h3 id="481-变换矩阵">4.8.1 变换矩阵</h3>
+<p>
+        <img class="mx-auto" alt="image-20220517162726001" src="UnityShader.assets/image-20220517162726001.png" />   
+    </p>
+<ol>
+<li>
+<p>比较特殊 <code>UNITY_MATRIX_T_MV</code> 矩阵，对于<strong>正交矩阵</strong>，</p>
+<ol>
+<li>若<code>UNITY_MATRIX_MV</code>是正交矩阵，<code>UNITY_MATRIX_T_MV</code> 就是它的<strong>逆矩阵</strong>，</li>
+<li>可以直接用 <code>UNITY_MATRIX_T_MV</code> 将顶点 从 <strong>观察空间</strong> 变换到 <strong>模型空间</strong></li>
+<li><strong>只有旋转</strong> <code>UNITY_MATRIX_MV</code> 是正交矩阵</li>
+<li><strong>只有旋转 和 统一缩放</strong> <code>UNITY_MATRIX_MV</code> 逆矩阵就是 $\frac{1}{k}$<code>UNITY_MATRIX_T_MV</code> k是统一缩放系数</li>
+<li>对于 <strong>方向矢量</strong>，只需 3*3 的矩阵，并在使用前都<strong>归一化处理</strong>，<strong>消除统一缩放影响</strong></li>
+</ol>
+</li>
+<li>
+<p><code>UNITY_MATRIX_IT_MV</code> <strong>法线变换</strong> 需要 原本变换矩阵的  <strong>逆转置矩阵</strong></p>
+<ol>
+<li>
+<p>因此 <code>UNITY_MATRIX_IT_MV</code> 可以变换法线，从 模型空间 到观察空间</p>
+</li>
+<li>
+<p>但是我们只需要 <strong>转置他</strong> 得到 <code>UNITY_MATRIX_MV</code>的 <strong>逆矩阵</strong></p>
+</li>
+<li>
+<p><strong>观察空间</strong> 变换到 <strong>模型空间</strong> 两种方法</p>
+</li>
+</ol>
+<pre tabindex="0"><code class="language-CG" data-lang="CG">// 方法一：使用 transpose 函数 对 UNITY_MATRIX_IT_MV 转置
+// 得到 UNTIY_MATRIX_MV 的  逆矩阵  进行列矩阵乘法
+//观察空间 变换到 模型空间
+float4 modelPos = mul(transpose(UNITY_MATRIX_IT_MV),  viewPos);
+
+//方法二： 不用转置 transpose ， 交换 mul 乘法的位置，行矩阵乘法
+//本质和 方法一一样
+float4 modelPos = mul(viewPos, UNITY_MATRIX_IT_MV)
+</code></pre></li>
+</ol>
+<h3 id="482-摄像机屏幕参数">4.8.2 摄像机屏幕参数</h3>
+<p>
+        <img class="mx-auto" alt="image-20220517165736494" src="UnityShader.assets/image-20220517165736494.png" />   
+    </p>
+<p>
+        <img class="mx-auto" alt="image-20220517165749440" src="UnityShader.assets/image-20220517165749440.png" />   
+    </p>
+<h2 id="49-答疑解惑">4.9 答疑解惑</h2>
+<h3 id="491-使用3--3还是4--4-矩阵">4.9.1 使用3 * 3还是4 * 4 矩阵</h3>
+<ol>
+<li>存在平移的时候使用 4 * 4 。因此 <strong>顶点变换</strong> 常用4 * 4 点的 $\omega$ 分量设为1</li>
+<li>对于矢量，3*3就够了，平移没有影响</li>
+</ol>
+<h3 id="492-cg中的-矢量-和矩阵类型">4.9.2 CG中的 矢量 和矩阵类型</h3>
+<ol>
+<li>两个矢量的点积操作
+<ol>
+<li>
+        <img class="mx-auto" alt="image-20220517172731898" src="UnityShader.assets/image-20220517172731898.png" />   
+    </li>
+</ol>
+</li>
+<li>矩阵乘法 参数位置 决定 行 列
+<ol>
+<li>
+        <img class="mx-auto" alt="image-20220517172820503" src="UnityShader.assets/image-20220517172820503.png" />   
+    </li>
+<li>前行后列</li>
+<li>并且，<strong>转置可以交换位置等价</strong><code>mul(M, v) == mul(v, tranpose(M))</code> <code>mul(v, M) == mul(tranpose(M), v)</code></li>
+</ol>
+</li>
+<li>Untiy中 内置矩阵 都是 <strong>按列存储</strong>，常用 <strong>右乘</strong> 按列乘法。 有时，<strong>左乘可以省去转置操作</strong></li>
+<li>==默认初始化 访问顺序==：<strong>按行优先存储</strong>，一行一行填充
+<ol>
+<li>
+        <img class="mx-auto" alt="image-20220517173845653" src="UnityShader.assets/image-20220517173845653.png" />   
+    </li>
+<li>
+        <img class="mx-auto" alt="image-20220517174006396" src="UnityShader.assets/image-20220517174006396.png" />   
+    </li>
+<li>Unity 内置了一种矩阵——<code>Matrix4*4</code> 优先采用 <strong>列优先方式</strong></li>
+</ol>
+</li>
+</ol>
+<h3 id="493-unity的屏幕坐标-computescreenposvposwpos">4.9.3 unity的屏幕坐标 ：ComputeScreenPos/VPOS/WPOS</h3>
+<ol>
+<li>
+<p>有时候，希望获得<strong>片元 在屏幕的像素位置</strong></p>
+</li>
+<li>
+<p>顶点/片元着色器中，两种方式获得的 <strong>片元 的屏幕坐标</strong></p>
+<ol>
+<li>
+<p>一种是在片元着色器<strong>输入中</strong>声明 <strong>VPOS</strong> 或 <strong>WPOS</strong> 语义。</p>
+<ol>
+<li>
+<p>VPOS是<strong>HLSL</strong>中对屏幕坐标的语义</p>
+</li>
+<li>
+<p>WPOS是<strong>CG</strong>中对屏幕坐标的语义，二者等价</p>
+</li>
+<li>
+<p>片元着色器中可以这样写</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C#" data-lang="C#">fixed4 frag(<span style="color:#66d9ef">float</span> <span style="color:#ae81ff">4</span> sp : VPOS) : SV_Target{
+	<span style="color:#75715e">//用屏幕坐标 除以 屏幕分辨率 _ScreenParams.xy, 得到视口空间坐标
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">return</span>  fixed4(sp.xy / <span style="color:#ae81ff">_</span>ScreenParams.xy, <span style="color:#ae81ff">0.0</span> , <span style="color:#ae81ff">1.0</span> )
+}
+</code></pre></div></li>
+<li>
+<p>效果图如下
+        <img class="mx-auto" alt="image-20220518100237089" src="UnityShader.assets/image-20220518100237089.png" />   
+    </p>
+</li>
+<li>
+<p>VPOS/WPOS 语义定义的输入是 **float4 **类型</p>
+<ol>
+<li><strong>x，y</strong>值代表在<strong>屏幕空间</strong>的 <strong>像素坐标</strong>，</li>
+<li>屏幕分辨率如果是 400 * 300, x 范围就是[0.5,400.5]，y范围[0.5,300.5]。</li>
+<li>像素不是整数，因为OpenGL和DirectX10之后认为<strong>像素中心</strong>对应<strong>浮点值0.5</strong></li>
+<li>unity中，**z **分量范围[0,1]，0在近裁剪平面，1是远裁剪平面</li>
+<li><strong>w</strong> 分量：
+<ol>
+<li>如果 <strong>透视投影</strong>  $[\frac{1}{Near}, \frac{1}{Far}]$ 分别是近远剪切平面，距离摄像机的距离</li>
+<li>如果 <strong>正交投影</strong>  值 <strong>恒为 1</strong></li>
+</ol>
+</li>
+</ol>
+</li>
+<li>
+<p>这些值是 经过<strong>投影矩阵</strong>变换 后的 w 分量 取倒数 得到的</p>
+</li>
+<li>
+<p>最后， <strong>屏幕空间</strong> 除以 <strong>屏幕分辨率</strong> 得到 <strong>视口空间（viewport space）</strong></p>
+</li>
+<li>
+<p><strong>视口坐标</strong> 把 <strong>屏幕坐标归一化</strong>，屏幕左下角(0,0),右上角(1,1)，如果已知屏幕坐标，只需要把 <strong><!-- raw HTML omitted -->x，y 值 除以屏幕分辨率<!-- raw HTML omitted --></strong></p>
+</li>
+</ol>
+</li>
+<li>
+<p>另一种：Unity 提供 <strong>ComputeScreenPos</strong> 函数，在<strong>UnityCG.cginc</strong> 中被定义</p>
+<ol>
+<li>
+<p>首先 <strong>顶点着色器</strong>中将 ComputeScreenPos结果保存在输出结构体中</p>
+</li>
+<li>
+<p>然后 <strong>片元着色器</strong> 中 进行一个 <strong>齐次除法</strong> 得到 <strong>视口空间</strong> 下的坐标</p>
+</li>
+<li>
+<p>
+        <img class="mx-auto" alt="image-20220518104426288" src="UnityShader.assets/image-20220518104426288.png" />   
+    </p>
+</li>
+<li>
+<p>效果和4.49一致，介绍实现细节：</p>
+<ol>
+<li>
+<p>实际上是 <strong>手动实现了屏幕映射的过程</strong>，得到的坐标 是 <strong>视口空间中的坐标</strong></p>
+</li>
+<li>
+<p>4.6.8中的将裁剪坐标空间的点映射到屏幕坐标中
+$$
+screen_x = \frac{clip_x · pixelWidth}{2·clip_w}+\frac{pixelWidth}{2} \
+screen_y = \frac{clip_y · pixelWidth}{2·clip_w}+\frac{pixelWidth}{2}
+$$</p>
+</li>
+<li>
+<p>以此得到 视口空间中的公式
+$$
+viewport_x = \frac{clip_x}{2·clip_w}+\frac{1}{2} \
+viewport_y = \frac{clip_y}{2·clip_w}+\frac{1}{2}
+$$</p>
+</li>
+<li>
+<p>首先 对 裁剪空间下的坐标 进行 齐次除法，得到范围 [-1,1] 的NDC</p>
+</li>
+<li>
+<p>然后 映射到 范围 <strong>[0,1] 的视口空间</strong> 下的坐标</p>
+</li>
+<li>
+<p>ComputeScreenPos是如何做到的？定义如下
+        <img class="mx-auto" alt="image-20220518105333159" src="UnityShader.assets/image-20220518105333159.png" />   
+    </p>
+</li>
+<li>
+<p>输入参数pos 是 MVP 矩阵变换后 <strong>裁剪空间</strong> 得 顶点坐标</p>
+</li>
+<li>
+<p>UNITY_HALF_TEXEL_OFFSET 是Unity在某些 DirectX平台的宏，只关注 #else部分</p>
+</li>
+<li>
+<p>_ProjectParams.x 默认情况 1 （使用翻转的投影矩阵 是 -1）</p>
+</li>
+<li>
+<p>代码实际输出：
+        <img class="mx-auto" alt="image-20220518140203478" src="UnityShader.assets/image-20220518140203478.png" />   
+    </p>
+</li>
+<li>
+<p>这里的x y 并不是真的 视口空间 下的坐标，</p>
+</li>
+<li>
+<p>所以 <strong>在片元着色器中进一步处理——除以裁剪坐标的 w 分量</strong> ，至此完成映射过程</p>
+</li>
+<li>
+<p><strong>ComputeScreenPos名字似乎是直接得到屏幕空间位置，但是仍要除以 w 分量得到真正的视口空间位置</strong></p>
+<ol>
+<li>为何Unity不直接 ComputeScreenPos 中 除以 w 分量呢？</li>
+<li>因为如果Unity <strong>顶点着色器</strong>这么做，<strong>会破坏差值的结果</strong>。</li>
+<li>从顶点着色器 到 片元着色器 有 <strong>插值</strong> 过程</li>
+<li>
+        <img class="mx-auto" alt="image-20220518152434957" src="UnityShader.assets/image-20220518152434957.png" />   
+    </li>
+<li>如果 <strong>顶点着色器</strong> 做了 除以 w 分量，得到 $x/\omega \ y/\omega$  ，到了 <strong>片元着色器</strong> 就直接 对 $x/\omega \ y/\omega$  插值， 而不是对 x，y 插值，</li>
+<li>我们需要的是 保留 x, y, w 三个分量，<!-- raw HTML omitted -->插值后<!-- raw HTML omitted -->，再 除以裁剪坐标的 w 分量</li>
+<li><strong>不可以在 投影空间 插值，因为这不是线性空间，插值往往是线性的</strong></li>
+</ol>
+</li>
+<li>
+<p>经过除法操作，可得到 片元 在 视口空间 中的坐标——</p>
+<ol>
+<li>
+<p>x，y 范围在[0,1] 之间的值，</p>
+</li>
+<li>
+<p>顶点着色器，将 裁剪空间的 z，w 存进了输出结构体。</p>
+</li>
+<li>
+<p>也就是说：z w 的范围如下</p>
+<table>
+<thead>
+<tr>
+<th>范围</th>
+<th>透视投影</th>
+<th>正交投影</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>z</td>
+<td>[-Near, Far]</td>
+<td>[-1, 1]</td>
+</tr>
+<tr>
+<td>w</td>
+<td>[Near, Far]</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<h1 id="第五章-开始unityshader学习之旅">第五章 开始UnityShader学习之旅</h1>
+<p>OpenGL的<strong>渲染纹理（render Texture）</strong>(0,0)点在左下角  DirectX (0,0) 点在左上角</p>
+<h2 id="52-简单的顶点片元着色器">5.2 简单的顶点/片元着色器</h2>
+<h3 id="521-顶点片元着色器-基本结构">5.2.1 顶点/片元着色器 基本结构</h3>
+<p>3.3提到了UnityShader的基本结构，包含了 Shader、Properties、SubShader、Fallback语义块</p>
+<p>
+        <img class="mx-auto" alt="image-20220518195235835" src="UnityShader.assets/image-20220518195235835.png" />   
+    </p>
+<p>最重要的就是<strong>Pass语义块</strong>，大部分代码都写在这里</p>
+<p>
+        <img class="mx-auto" alt="image-20220519203737734" src="UnityShader.assets/image-20220519203737734.png" />   
+    </p>
+<h4 id="1顶点着色器">1.顶点着色器</h4>
+<ol>
+<li><strong>输入</strong> ：v 包含 顶点位置， 通过POSITION 指定</li>
+<li>**返回值：**是顶点在裁剪空间中的位置</li>
+<li><code>POSITION  SV_POSITION</code> 都是 CG/HLSL 的 <strong>语义（semantics）</strong></li>
+<li><strong>语义：</strong> 不可省略，告诉需要什么输入值，输出是什么</li>
+<li>此处<code>POSITION</code> 告诉Unity，把模型顶点坐标填充到输入参数 <code>v</code> 中</li>
+<li>此处<code>SV_POSITION</code> 告诉Unity，顶点着色器输出是 裁剪空间中的顶点坐标</li>
+</ol>
+<h4 id="2片元着色器">2.片元着色器</h4>
+<ol>
+<li>本例中frag函数无输入，输出为 fixed4变量</li>
+<li><code>SV_Tatget</code> 也是 HLSL的系统语义。</li>
+<li>告诉渲染器，把用户的输出颜色存储到 一个 <strong>渲染目标（render target）</strong>，将这些输出到默认的帧缓存中。</li>
+</ol>
+<h3 id="522-模型数据从哪里来">5.2.2 模型数据从哪里来</h3>
+<p>上例中，使用<code>POSITION</code>得到模型顶点位置，要更多模型数据怎么做？</p>
+<ol>
+<li>想要 模型上的 <strong>每个顶点 的 纹理坐标和 法线方向</strong></li>
+<li>纹理坐标访问纹理， 法线用于计算光照</li>
+<li>因此我们需要给 顶点着色器 定义新的输入参数，是一个结构体</li>
+<li>
+        <img class="mx-auto" alt="image-20220520154520516" src="UnityShader.assets/image-20220520154520516.png" />   
+    </li>
+<li>Unity还有其他语义：<code>POSITION, TANGENT, NORMAL, TEXCOORD0, TEXCOOED1, TEXCOORD2, TEXCOORD3, COLOR</code></li>
+<li>
+        <img class="mx-auto" alt="image-20220520152934644" src="UnityShader.assets/image-20220520152934644.png" />   
+    </li>
+<li>a2v: application(应用) to vertex shader，意思就是把数据 应用阶段 传递到 顶点着色器</li>
+<li>填充到 <strong>语义</strong> 中数据来源：
+<ol>
+<li>Unity中，由 使用这个材质material 的 <em>mesh Render</em> 组件提供，</li>
+<li>每一帧调用 DrawCall时，<em>Mesh Render</em>  组件会 把他负责渲染的模型数据发送给 UnityShader</li>
+<li>一个模型包含 一组三角面片， 每个三角面片由 3 个顶点构成，每个顶点包含 <!-- raw HTML omitted -->顶点位置，法线，切线，纹理坐标，顶点颜色<!-- raw HTML omitted -->等数据</li>
+</ol>
+</li>
+</ol>
+<h3 id="523-顶点着色器和片元着色器之间如何通信">5.2.3 顶点着色器和片元着色器之间如何通信</h3>
+<p>实践中：想从 <strong>顶点着色器输出一些数据</strong>：如 把模型法线、纹理坐标等数据 <strong>给 片元着色器</strong></p>
+<p>
+        <img class="mx-auto" alt="image-20220520211205969" src="UnityShader.assets/image-20220520211205969.png" />   
+    </p>
+<ol>
+<li>声明了新结构体 v2f 用于 顶点 片元 着色器间传递数据</li>
+<li>v2f 使用了 <code>SV_POSITION,  COLOR0</code> 两个语义</li>
+<li>顶点着色器<strong>输出结构</strong> 必须包含一个变量，语义是 <code>SV_POSITION</code></li>
+<li>否则 render 无法得到 裁剪空间中的顶点坐标，更无法把顶点 渲染到屏幕上</li>
+<li><code>COLOR0</code> 语义数据可以 由用户自行定义，一般是存储颜色</li>
+<li>顶点着色器 <strong>逐顶点调用</strong> 片元着色器 <strong>逐片元调用</strong> 片元着色器输入 是 顶点着色器输出的插值</li>
+<li>nmd这段代码2019.4.38用不了</li>
+</ol>
+<h3 id="524-如何使用属性">5.2.4 如何使用属性</h3>
+<p>材质和shader紧密联系，材质提供我们方便调节unityshader参数的方式，通过参数可以调整材质，这些参数就要写在 <strong>Properties</strong> 语义块中。</p>
+<p>想要在 材质面板 显示一个颜色拾取器，直接控制 模型 显示的颜色</p>
+<p>
+        <img class="mx-auto" alt="image-20220523094825216" src="UnityShader.assets/image-20220523094825216.png" />   
+    </p>
+<p>为了在CG代码访问 _Color,需要提前定义一个新的变量</p>
+<p>
+        <img class="mx-auto" alt="image-20220523095231066" src="UnityShader.assets/image-20220523095231066.png" />   
+    </p>
+<p>有的CG变量前会有一个<strong>uniform</strong> 关键字 例如 <code>uniform fixed4 _Color</code></p>
+<p>uniform关键字 仅用于提供一些关于 该变量初始值是如何指定 存储 的相关信息，UnityShader中uniform关键词可以忽略。</p>
+<h2 id="53-强大的援手unity提供的内置文件和变量">5.3 强大的援手：Unity提供的内置文件和变量</h2>
+<h3 id="531-内置包含文件">5.3.1 内置包含文件</h3>
+<p><strong>包含文件( include file)</strong>，类似C++头文件，Unity中后缀是 <code>.cginc</code> 使用<code>#include</code> 指令包含：<code>#include &quot;UnityCG.cginc&quot;</code></p>
+<p>
+        <img class="mx-auto" alt="image-20220523101810027" src="UnityShader.assets/image-20220523101810027.png" />   
+    </p>
+<p>
+        <img class="mx-auto" alt="image-20220523102145509" src="UnityShader.assets/image-20220523102145509.png" />   
+    </p>
+<p>
+        <img class="mx-auto" alt="image-20220523102353358" src="UnityShader.assets/image-20220523102353358.png" />   
+    </p>
+<p>
+        <img class="mx-auto" alt="image-20220523102409009" src="UnityShader.assets/image-20220523102409009.png" />   
+    </p>
+<h3 id="532-内置的变量">5.3.2 内置的变量</h3>
+<p>Unity还提供了 用于 访问时间、光照、雾效、环境光等目的变量，大多数位于 <code>UnityShaderVariables.cginc</code></p>
+<h2 id="54-unity-提供的-cghlsl语义">5.4 Unity 提供的 CG/HLSL语义</h2>
+<h3 id="541-什么是语义semantics">5.4.1 什么是语义（semantics）</h3>
+<ol>
+<li>这些是CG/HLSL提供的语义，DirectX中找到语义详细说明。</li>
+<li>语义是 赋给 Shader 输入和输出的字符串，表达了这个参数的含义。</li>
+<li>可以让Shader知道<strong>从哪里读取数据</strong>，并 <strong>把数据输出到哪里</strong></li>
+<li>Unity为了方便对 <strong>模型数据</strong> 的传输，对一些语义特别含义规定，例如：
+<ol>
+<li>顶点着色器输入结构体 a2f 用TEXCOORD0来描述texcoord，Unity会识别TEXCOORD0语义，把模型<!-- raw HTML omitted -->第一组纹理坐标<!-- raw HTML omitted -->填充到texcoord中。</li>
+<li>出现位置不同，语义含义也不同。v2f中，没有特殊含义，a2f就有：把模型第一组纹理坐标存储在该变量中。</li>
+</ol>
+</li>
+<li>DirectX10之后，新的语义类型：**系统数值语义（system-value semantics）**这类都是 SV开头。
+<ol>
+<li>在渲染流水线有特殊含义，用 <code>SV_POSITION</code> 语义修饰顶点着色器的 输出变量 pos，表示pos包含了可用于 光栅化 的变换后的顶点坐标（齐次裁剪坐标空间的坐标）
+<ol>
+<li>用这些语义描述的变量，不可以随便赋值，流水线需要用他们 完成特定目的：引擎会用 <code>SV_POSITION</code>修饰的变量经过光栅化后显示在屏幕上。</li>
+<li>同一个变量 不同的Shader里 用不同的语义修饰。例如 一些Shader 用 <code>POSITION</code> 而非<code>SV_POSITION</code>修饰 顶点着色器输出。</li>
+<li><code>SV_POSITION</code> 是DirectX10引入的系统数值语义，<strong>大多平台和POSITION语义等价</strong> ，但是如PS4必须用 <code>SV_POSITION</code> 修饰 顶点着色器的输出。还有 <code>COLOR</code>和<code>SV_Target</code></li>
+<li>所以为了跨平台性，特殊含义变量，最好用 SV开头的语义</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<h3 id="542-unity支持的语义">5.4.2 Unity支持的语义</h3>
+<p>
+        <img class="mx-auto" alt="image-20220523223730396" src="UnityShader.assets/image-20220523223730396.png" />   
+    </p>
+<p>
+        <img class="mx-auto" alt="image-20220523223829819" src="UnityShader.assets/image-20220523223829819.png" />   
+    </p>
+<p>
+        <img class="mx-auto" alt="image-20220523223854295" src="UnityShader.assets/image-20220523223854295.png" />   
+    </p>
+<h3 id="543-如何定义复杂的变量类型">5.4.3 如何定义复杂的变量类型</h3>
+<p>
+        <img class="mx-auto" alt="image-20220523224058619" src="UnityShader.assets/image-20220523224058619.png" />   
+    </p>
+<ul>
+<li>5.7.1会给出建议，<strong>一个语义可以使用的寄存器只能处理4个浮点值(float)</strong></li>
+<li>因此float3x4和float4x4需要更多空间
+<ul>
+<li>一种方法，变量拆分成多个变量，对于float4x4 拆成4个float4类型的变量，每个变量存一行数据</li>
+</ul>
+</li>
+</ul>
+<h2 id="55-debug">5.5 Debug</h2>
+<h3 id="551-使用假彩色图像false-color-image">5.5.1 使用假彩色图像（false-color image）</h3>
+<p>指的是 假彩色技术 生成的一种图像，与其对应的是 <strong>真彩色图像（true-color image)</strong>。假彩色图像可用于 可视化一些数据。如何用它对Shader调试？</p>
+<p>主要思想：把需要调试的变量 映射到[0,1] 之间，作为颜色输出到屏幕上，通过屏幕上像素判断。</p>
+<ul>
+<li>如果要一维数据，选择一个单独颜色分量，输出，把其他颜色分量置0。</li>
+<li>如果是多维数据，选择对它每个分量单独测试，或者 选择多个颜色分量输出</li>
+</ul>
+<p>上述代码使用Unity内置结构体—— <em>appdata_full</em> : 几乎包含了所有模型数据</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C#" data-lang="C#"><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">appdata_full</span> {
+    float4 vertex : POSITION;
+    float4 tangent : TANGENT;
+    float3 normal : NORMAL;
+    float4 texcoord : TEXCOORD0;　　<span style="color:#75715e">//第一纹理坐标
+</span><span style="color:#75715e"></span>    float4 texcoord1 : TEXCOORD1;　　<span style="color:#75715e">//第二纹理坐标
+</span><span style="color:#75715e"></span>    float4 texcoord2 : TEXCOORD2;　　<span style="color:#75715e">//第三纹理坐标
+</span><span style="color:#75715e"></span>    float4 texcoord3 : TEXCOORD3;　　<span style="color:#75715e">//第四纹理坐标
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">#if defined (SHADER_API_XBOX360)
+</span><span style="color:#75715e"></span>        half4 texcoord4 : TEXCOORD4;
+	half4 texcoord5 : TEXCOORD5;
+    <span style="color:#75715e">#endif
+</span><span style="color:#75715e"></span>    fixed4 color : COLOR;<span style="color:#75715e">//顶点颜色
+</span><span style="color:#75715e"></span>};
+</code></pre></div><h3 id="552-visual-studio调试">5.5.2 Visual Studio调试</h3>
+<p>
+        <img class="mx-auto" alt="image-20220525173108753" src="UnityShader.assets/image-20220525173108753.png" />   
+    </p>
+<h3 id="553-帧调试器-frame-debugger">5.5.3 帧调试器 Frame Debugger</h3>
+<p>
+        <img class="mx-auto" alt="image-20220526091416433" src="UnityShader.assets/image-20220526091416433.png" />   
+    </p>
+<p>Frame Debugger中，Draw开头的事件通常就是一个Draw Call</p>
+<h2 id="56-小心渲染平台差异">5.6 小心渲染平台差异</h2>
+<p>
+        <img class="mx-auto" alt="image-20220526145520539" src="UnityShader.assets/image-20220526145520539.png" />   
+    </p>
+<ul>
+<li>不仅要把 渲染结果 输出到屏幕上，还可以 输出到不同的渲染目标（Render Target）中</li>
+<li>我们需要 **渲染纹理（render texture）**保存这些结果——12章学习如何达到</li>
+<li>DirectX平台 抗锯齿 会 纹理翻转</li>
+<li>
+        <img class="mx-auto" alt="image-20220526150516959" src="UnityShader.assets/image-20220526150516959.png" />   
+    </li>
+</ul>
+<h3 id="562-shader-语法差异">5.6.2 Shader 语法差异</h3>
+<p>
+        <img class="mx-auto" alt="image-20220526151029931" src="UnityShader.assets/image-20220526151029931.png" />   
+    </p>
+<p>
+        <img class="mx-auto" alt="image-20220526151126672" src="UnityShader.assets/image-20220526151126672.png" />   
+    </p>
+<p>DirectX 不支持 <strong>顶点着色器</strong> 中使用<strong>tex2D</strong>函数，tex2D是一个对纹理 进行采样的函数，DX不支持顶点阶段的tex2D运算，因为顶点着色器阶段Shader无法得到UV偏导。</p>
+<p>若是真想 <strong>顶点阶段访问纹理</strong> 使用<strong>tex2Dlod</strong> 代替：<code>#pragma target3.0 tex2Dlod(tex, float4(uv, 0, 0))</code></p>
+<h3 id="563-shader语义差异">5.6.3 Shader语义差异</h3>
+<ul>
+<li>使用 <code>SV_POSITION</code>描述顶点着色器 输出顶点位置</li>
+<li>使用<code>SV_Target</code> 描述片元着色器 输出颜色</li>
+</ul>
+<h3 id="564-其他平台差异">5.6.4 其他平台差异</h3>
+<p>Unity官方文档：<a href="https://docs.unity3d.com/cn/2019.4/Manual/SL-PlatformDifferences.html">平台特定的渲染差异</a></p>
+<h2 id="57-shader简洁之道">5.7 Shader简洁之道</h2>
+<h3 id="571-floathalf-还是-fixed">5.7.1 float、half 还是 fixed</h3>
+<p>
+        <img class="mx-auto" alt="image-20220526160911855" src="UnityShader.assets/image-20220526160911855.png" />   
+    </p>
+<p>不一定和上述一致 <a href="https://docs.unity.cn/cn/2020.3/Manual/SL-DataTypesAndPrecision.html">Unity手册数据精度</a></p>
+<p><strong>field 精度1/256</strong> 一般存颜色</p>
+<p><strong>half</strong> 精度约为 3 位小数 对于短矢量、方向、对象空间位置、高动态范围颜色非常有用</p>
+<ul>
+<li>float、half、fixed 大多数现代桌面GPU等价。会把浮点用最高精度计算</li>
+<li>移动平台GPU 有不同的精度范围，确保真真的移动平台验证Shader</li>
+<li>fixed精度 实际上只在 旧平台用，大多数现代GPU half==fixed</li>
+</ul>
+<p><strong>基本建议：使用尽可能 低 精度的类型</strong></p>
+<h3 id="572-规范语法">5.7.2 规范语法</h3>
+<p>DirectX平台语法更严格，初始化时，使用变量类型匹配的参数，来初始化。</p>
+<h3 id="573-避免不必要运算">5.7.3 避免不必要运算</h3>
+<p>
+        <img class="mx-auto" alt="image-20220526170734592" src="UnityShader.assets/image-20220526170734592.png" />   
+    </p>
+<p>尽量减少在 Shader 上的计算，有寄存器上限，可以通过 预运算 提供更多数据</p>
+<ul>
+<li>什么是Shader Model？
+<ul>
+<li>微软提出的规范，<strong>决定了 Shader 中 各个特性（feature） 的 能力（capability）</strong></li>
+<li>这些特性和能力 体现在 Shader 能使用的 <strong>运算指令数目、寄存器个数等方面</strong></li>
+<li>ShaderModel 等级越高，Shader能力越大</li>
+</ul>
+</li>
+</ul>
+<h3 id="574-慎用分支-循环语句">5.7.4 慎用分支 循环语句</h3>
+<p>最开始，GPU不支持在 顶点着色器 片元着色器中 使用 流程控制，现在可以用<code>if else for while</code>了</p>
+<p>但是GPU和CPU上很大不同，最坏情况下，一个分支语句时间 可能等于 运行了所有分支语句的时间。</p>
+<ol>
+<li>解决方法： 把计算向 流水线上端移动
+<ol>
+<li>例如 在 片元着色器 的计算 放在 顶点着色器。</li>
+<li>或者直接放在CPU中预计算，把结果传给Shader</li>
+</ol>
+</li>
+<li>真的不可避免时：
+<ol>
+<li>分支判断语句 使用的条件变量 最好是<strong>常数const</strong>，Shader运行过程中 该值不变</li>
+<li>每个分支包含的<strong>操作指令数 尽可能少</strong></li>
+<li>分支<strong>嵌套层数尽可能少</strong></li>
+</ol>
+</li>
+</ol>
+<h3 id="575-不要除以-0">5.7.5 不要除以 0</h3>
+<p>
+        <img class="mx-auto" alt="image-20220527081939437" src="UnityShader.assets/image-20220527081939437.png" />   
+    </p>
+<p>解决方法：<strong>强制截取到 非0范围 || 或者用if语句判断除数是否为 0</strong></p>
+<h2 id="58-扩展阅读">5.8 扩展阅读</h2>
+<p>
+        <img class="mx-auto" alt="image-20220527081959984" src="UnityShader.assets/image-20220527081959984.png" />   
+    </p>
+<h1 id="第六章-unity中的基础光照">第六章 Unity中的基础光照</h1>
+<p>渲染基础问题：<strong>如何决定一个像素的颜色？</strong></p>
+<ol>
+<li>宏观来看，渲染包含了两大部分：
+<ol>
+<li>决定一个像素的可见性。</li>
+<li>决定这个像素上的光照计算。</li>
+<li>光照模型就是用于决定一个像素 怎样进行光照运算</li>
+</ol>
+</li>
+<li>本章讲原理，实现的Shader往往不能直接应用到实际项目（会出现 缺少阴影、光照衰减效果）</li>
+</ol>
+<h2 id="61-我们是如何看到世界的">6.1 我们是如何看到世界的</h2>
+<p>模拟真实光照环境生成一张图，考虑三种物理现象：</p>
+<ol>
+<li>光线 从 <strong>光源（light source）</strong> 发出</li>
+<li>光线和场景中 一些物体相交：一些光线被物体吸收了，另一些光线背散射到其他方向</li>
+<li>摄像机吸收了一些光，产生一张图像</li>
+</ol>
+<h3 id="611-光源">6.1.1 光源</h3>
+<ol>
+<li>光源被视作 没有体积的点，用 $l$ 来表示方向。
+<ol>
+<li>并且，用 <strong>辐照度（irradiance）</strong> 量化光。</li>
+<li>对于平行光：辐照度 = 垂直于 $l$ 的单位面积上 单位时间 内穿过的能量</li>
+<li>物体往往和光源方向不垂直，所以需要使用<strong>法线夹角余弦值得到</strong></li>
+</ol>
+</li>
+<li>
+        <img class="mx-auto" alt="image-20220527152645121" src="UnityShader.assets/image-20220527152645121.png" />   
+    
+<ol>
+<li>辐照度 和 照射物体表面时 光线之间的距离 $d / \cos{\theta}$ 成反比。</li>
+<li>辐照度 和 $\cos{\theta}$ 成正比。 $\cos{\theta}$  可使用 光源防线 I 和 表面法线 n 的 <strong>点击</strong> 获得</li>
+<li>点积用于计算辐照度</li>
+</ol>
+</li>
+</ol>
+<h3 id="612-吸收和散射">6.1.2 吸收和散射</h3>
+<p>光线和物体相交后：<strong>散射（scattering） 和 吸收（absorption）</strong></p>
+<ul>
+<li>散射：只改变 光线方向，不改变光的 密度 颜色
+<ul>
+<li>散射后两种方向：一种进入物体内部，叫 <strong>折射（refraction） 透射（transmission）</strong></li>
+<li>另一种 散射到外部：叫 <strong>反射（reflection）</strong></li>
+<li>折射进入 不透明物体 的光，还会重新发出来，和被吸收</li>
+</ul>
+</li>
+<li>吸收：只改变光的 密度 颜色，不改变光的 方向</li>
+</ul>
+<p>
+        <img class="mx-auto" alt="image-20220527155958540" src="UnityShader.assets/image-20220527155958540.png" />   
+    </p>
+<p>区分两种散射方向：</p>
+<ol>
+<li>**高光反射（specular）**表示物体表面是如何反射光线的</li>
+<li>**漫反射（diffuse）**表示有多少光线会被折射、吸收、散射出表面。根据入射光计算
+<ol>
+<li>通常使用 <strong>出射度（exitance）</strong> 来描述它。</li>
+</ol>
+</li>
+<li><strong>辐照度 出射度 只见满足线性关系</strong> 他们的比值是 材质的 <strong>漫反射</strong> 和 <strong>高光反射的属性</strong></li>
+</ol>
+<h3 id="613-着色shading">6.1.3 着色（shading）</h3>
+<p>根据 <strong>材质属性（如漫反射属性）、光源信息（如光源方向、辐照度）</strong><!-- raw HTML omitted -->等一个等式<!-- raw HTML omitted --> 去计算 沿某个观察方向的 <strong>出射度</strong> 的过程。</p>
+<p>我们也 将这个等式 称为 <strong>光照模型（Lighting Model）</strong>。</p>
+<h3 id="614-brdf-光照模型">6.1.4 BRDF 光照模型</h3>
+<p>已知 光源位置、方向、视角方向，需要知道一个表面如何和光照交互的？</p>
+<p>**BRDF（bidirectional reflection Distribution function）**用于回答这个问题</p>
+<p>给定模型表面一个点时，BRDF包含了对这个点 外观完整描述，BRDF大多使用一个数学公式来表示，并且提供了一些参数来调整材质属性。</p>
+<p>当给定 <strong>入射光的 方向 辐照度</strong> 后，BRDF可以给出 <strong>某个出射方向 上的 光照能量分布</strong></p>
+<h2 id="62-标准光照模型">6.2 标准光照模型</h2>
+<p>标准光照模型只关注 <strong>直接光照（direct light）</strong> 发射到物体表面后，经过一次反射直接进入摄像机的光线。</p>
+<p>基本方法：进入到摄像机内的光线分为4个部分，每部分使用一种方法计算它的贡献度。</p>
+<p>
+        <img class="mx-auto" alt="image-20220527172753759" src="UnityShader.assets/image-20220527172753759.png" />   
+    </p>
+<h3 id="621-环境光">6.2.1 环境光</h3>
+<p>标准光照模型 重点在于描述 直接光照。</p>
+<p>真实世界中，物体也可被<strong>间接光照（indirect light）</strong>：</p>
+<ol>
+<li>光照通常会在多个物体之间反射，最后进入摄像机。</li>
+<li>光线进入摄像机前，经过了不止一次反射</li>
+</ol>
+<p>标准光照模型 <strong>使用环境光 模拟 间接光照</strong> 环境光通常是 全局变量，所有物体都用这个环境光。
+$$
+c_{ambient} = g_{ambient}
+$$</p>
+<h3 id="622-自发光">6.2.2 自发光</h3>
+<p>光线 不经过反射 直接进入摄像机。</p>
+<p>标准光照模型 使用 自发光计算这部分。直接使用该材质的自发光颜色
+$$
+c_{emissive} = m_{emissive}
+$$
+不用全局光照，自发光不会照亮周围表面。</p>
+<h3 id="623-漫反射">6.2.3 漫反射</h3>
+<p>那些被物体表面 随机散射到各个方向的辐射度进行建模。漫反射中视角位置不重要，反射完全随机，因此认为<strong>各个反射方向分布都一样</strong>。</p>
+<p><strong>漫反射 符合 兰伯特定律（Lambert&rsquo;s law）</strong>：反射光线的强度 与 表面法线 和 光源方向之间 夹角余弦值 成正比：
+$$
+c_{diffuse} = (c_{light} ·m_{diffuser} max(0, n ·I))
+$$
+n是表面法线，I是 指向光源的单位矢量，$m_{diffuse}$ 是材质的漫反射颜色，$c_{light}$ 是光源颜色。</p>
+<ul>
+<li>防止 法线和 光源方向 点乘结果为 负值。使用取最大值函数截取到0。</li>
+<li>防止物体被从后面来的光源照亮</li>
+</ul>
+<h3 id="624-高光反射">6.2.4 高光反射</h3>
+<p>此处为经验模型，不完全符合真实世界的高光反射。可用于计算 <strong>沿着 完全镜面反射方向</strong> 的光线，比如金属</p>
+<p>
+        <img class="mx-auto" alt="image-20220531104333718" src="UnityShader.assets/image-20220531104333718.png" />   
+    </p>
+<p>高光反射须知：<strong>表面法线、视角方向、光源方向、反射方向等</strong>本节设为单位矢量。</p>
+<p>只需要知道前三个矢量，反射方向 通过其他信息计算得到：
+$$
+r = 2(\hat{n} · I) \hat{n} - I
+$$
+此时利用Phong模型计算<strong>高光反射</strong>：
+$$
+c_{spscular} = (c_{light}·m_{specular} )max(0, \hat{v} · \hat{r})^{m_{gloss}}
+$$</p>
+<ul>
+<li>$m_{gloss}$ 就是材质<strong>光泽度（gloss）反光度（shininess）</strong> 用于控制高光区域的 “亮点”多宽。</li>
+<li>$m_{gloss}$ 越大，亮点越小。</li>
+<li>$m_{specular}$ 是材质的 高光反射颜色，用于控制 该材质 对于高光反射的强度和颜色。</li>
+<li>$c_{light}$ 是光源的颜色和强度。</li>
+<li>max函数防止 $\hat{v} · \hat{r}$ 结果负数。</li>
+</ul>
+<p>与Phong模型相比，Blinn 提出了一个简单的修改方法得到类似效果：<strong>避免计算反射方向</strong> $\hat{r}$</p>
+<p>为此，Blinn引入新的矢量 $\hat{h}$ 通过对 $\hat{v}\ 和\ \hat{I}$  平均 再归一化 得到
+$$
+\hat{h} = \frac{\hat{v} + I}{| \hat{v} + I|}
+$$
+然后使用 $\hat{v}\ 和\ \hat{h}$ 之间夹角计算， 而不是  $\hat{v}\ 和\ \hat{r}$  之间夹角计算。</p>
+<p>Blinn模型公式如下：
+$$
+c_{spscular} = (c_{light}·m_{specular} )max(0, \hat{n} · \hat{h})^{m_{gloss}}
+$$
+
+        <img class="mx-auto" alt="image-20220531104257828" src="UnityShader.assets/image-20220531104257828.png" />   
+    </p>
+<ul>
+<li>硬件实现时， Camera 和 光源 距离 模型Model 足够远的时候，Blinn快于 Phong，
+<ul>
+<li>此时认为 $\hat{v}\ 和\ \hat{I}$ 都是定值，$\hat{h}$ 是一个常量。</li>
+<li>$\hat{v}\ 和\ \hat{I}$ 不是定值，Phong模型更快。</li>
+</ul>
+</li>
+<li>这两种都是 经验模型，有些时候 Blinn更多符合结果。</li>
+</ul>
+<h3 id="625-逐像素-还是-逐顶点">6.2.5 逐像素 还是 逐顶点</h3>
+<ol>
+<li>
+<p>在 片元着色器 计算，<strong>逐像素光照（per-pixel lighting）</strong></p>
+<ol>
+<li>每个像素为基础，得到 法线normal（可以是 对顶点法线插值 得到，也可以从法线纹理采样得到）</li>
+<li>然后进行 光照模型计算</li>
+<li>这种在面片之间 对顶点法线 插值的技术被称为 <strong>Phong着色（Phong shading）</strong></li>
+<li>或者 <strong>Phong插值 或者 法线差值着色技术</strong></li>
+<li>不同于 Phong光照模型</li>
+</ol>
+</li>
+<li>
+<p>在 顶点着色器 计算，<strong>逐顶点光照（per-vertex lighting）</strong></p>
+<ol>
+<li>也称为 高洛德着色（Gouraud shading）。</li>
+<li>每个顶点上，计算光照，然后在渲染图元内部 线性插值，最后输出成像素颜色。</li>
+<li>一般 顶点数目 &laquo;远小于 像素数目 因此计算量小于 逐像素光照。</li>
+<li>但是，因为 逐顶点光照 <strong>依赖线性插值</strong> 得到像素光照，所以，当光照模型有 <strong>非线性计算（如高光反射）</strong> 逐顶点光照会出问题。</li>
+<li>而且，由于 逐顶点光照 会在渲染图元内部 对顶点颜色插值，导致渲染图元内部的颜色 总是暗于顶点处的最高颜色值，有时会产生 明显的棱角现象</li>
+</ol>
+</li>
+</ol>
+<h3 id="626-总结">6.2.6 总结</h3>
+<ul>
+<li>标准光照模型 仅仅是经验模型，不完全符合真实世界光照现象。</li>
+<li>但因为易用性、计算速度，得到效果很好，悲观凡使用。</li>
+<li>后来Blinn方法简化计算，被称为Blinn-Phong 光照模型</li>
+<li>局限性：
+<ul>
+<li>重要的物理现象无法用Blinn-Phong 表现例如<strong>菲涅尔反射（Fresnel reflection）</strong></li>
+<li>Blinn-Phong是 <strong>各向同性（isotropic）</strong>，当我们固定视角 和 光源方向旋转这个表面时。反射不会发生改变。</li>
+<li>但是 拉丝金属、毛发 表面是 <strong>各向异性的（anisotropic）</strong></li>
+</ul>
+</li>
+</ul>
+<h2 id="63-unity中的环境光和自发光">6.3 Unity中的环境光和自发光</h2>
+<p>
+        <img class="mx-auto" alt="image-20220531152846705" src="UnityShader.assets/image-20220531152846705.png" />   
+    </p>
+<h2 id="64-unity中实现漫反射光照模型">6.4 Unity中实现漫反射光照模型</h2>
+<p>$$
+c_{diffuse} = (c_{light}· m_{diffuse}) max(0, \hat{n} · I) \
+入射光的颜色和强度 c_{light} \ 材质漫反射系数m_{diffuse} \
+表面法线 \hat{n} \ \ 光源方向 I
+$$</p>
+<p>防止点积结果 &lt; 0，max操作，CG提供了这样的函数，saturate函数：</p>
+<p>
+        <img class="mx-auto" alt="image-20220531161906127" src="UnityShader.assets/image-20220531161906127.png" />   
+    </p>
+<h3 id="641-实践逐顶点光照">6.4.1 实践：逐顶点光照</h3>
+<p>
+        <img class="mx-auto" alt="image-20220607143521905" src="UnityShader.assets/image-20220607143521905.png" />   
+    </p>
+<p>逐像素 光照更加平滑。细分程度高的模型，逐顶点光照效果好
+细分程度低的模型，会出视觉问题，背光面，向光面 交界处出现锯齿</p>
+<h3 id="642-逐像素光照">6.4.2 逐像素光照</h3>
+<p>
+        <img class="mx-auto" alt="image-20220607170719131" src="UnityShader.assets/image-20220607170719131.png" />   
+    </p>
+<p>问题：光照无法到达的区域，模型外观全黑，没有明暗变化，让背光区域看起来像一个平面。
+通过添加环境光，也无法彻底解决 背光明暗一样的缺点
+改善：<strong>半兰伯特（Half Lambert）光照模型</strong></p>
+<h3 id="643-半兰伯特模型">6.4.3 半兰伯特模型</h3>
+<p>6.4.1小节，漫反射光照模型，被称为 <strong>兰伯特光照模型</strong>，符合兰伯特定律——平面某点 漫反射光的光强，与该反射点的法向量 和入射光角度的余弦值 成正比。</p>
+<p>valve开发《半条命》时，提出 <strong>半兰伯特光照模型</strong></p>
+<p>
+        <img class="mx-auto" alt="image-20220607193753384" src="UnityShader.assets/image-20220607193753384.png" />   
+    </p>
+<p>半兰伯特和兰伯特区别：添加 $一个\alpha缩放 和一个\beta偏移$ 通常都为 <strong>0.5</strong>
+$$
+c_{diffuse} = (c_{light }· m_{diffuse})(0.5(\hat{n} · I) +0.5)
+$$</p>
+<ul>
+<li>这可以把 $\hat{n} · I$ 范围从 [-1,1]映射到[0,1]中。</li>
+<li>对于模型背光面，兰伯特 点积结果 映射到同一个值：0</li>
+<li>半兰伯特，背光有明暗变化，不同点积结果 映射到不同的值。</li>
+<li>无物理依据，是视觉加强技术</li>
+</ul>
+<p>
+        <img class="mx-auto" alt="image-20220607211100643" src="UnityShader.assets/image-20220607211100643.png" />   
+    </p>
+<p>代码就是改了下 逐像素计算，改了两行</p>
+<p>
+        <img class="mx-auto" alt="image-20220607210555587" src="UnityShader.assets/image-20220607210555587.png" />   
+    </p>
+<p>
+        <img class="mx-auto" alt="image-20220607210512561" src="UnityShader.assets/image-20220607210512561.png" />   
+    </p>
+<h2 id="65-unity-高光反射光照模型">6.5 Unity 高光反射光照模型</h2>
+<p>6.2.4给出了基本光照模型中高光反射部分计算公式：
+$$
+c_{specular} = (c_{light} · m_{specular}) max(0, \hat{v}·r)^{m_{gloss}}
+$$
+需要四个参数：</p>
+<ol>
+<li>入射光线的颜色和强度 $c_{light}$</li>
+<li>材质的高管反射系数 $m_{specular}$</li>
+<li>视角方向 $\hat{v}$</li>
+<li>反射方向 r</li>
+<li>反射方向r 用 表面法线 $\hat{n}$，和光源方向 $\hat{I}$ 计算</li>
+</ol>
+<p>$$
+反射光方向\ r = 2(\hat{n} · \hat{I}) \hat{n}- \hat{I}
+$$</p>
+<p>CG 提供了计算反射方向的函数： <strong>reflect(i , n ) i:入射角方向，n：法线方向</strong></p>
+<p>
+        <img class="mx-auto" alt="image-20220608105400242" src="UnityShader.assets/image-20220608105400242.png" />   
+    </p>
+<h3 id="651-逐顶点光照">6.5.1 逐顶点光照</h3>
+<p>
+        <img class="mx-auto" alt="image-20220627164320856" src="UnityShader.assets/image-20220627164320856.png" />   
+    </p>
+<h3 id="652-逐像素光照">6.5.2 逐像素光照</h3>
+<p>
+        <img class="mx-auto" alt="image-20220627164739708" src="UnityShader.assets/image-20220627164739708.png" />   
+    </p>
+<p>逐像素光照形成的 高光 更加平滑。至此，实现了一个完整的Phong光照模型</p>
+<h3 id="653-blinn-phong-光照模型">6.5.3 Blinn-Phong 光照模型</h3>
+<p>6.2.4中提到了另一种实现 高光反射——Blinn方法：没有用<strong>反射方向</strong>，引入了新的矢量  $\hat{h}$ 通过对<strong>视角方向 v</strong>  + <strong>光照方向 I</strong>  归一化得到</p>
+<p>h 其实就是 视角方向v 和 光照方向 I 的角平分线</p>
+<p>
+        <img class="mx-auto" alt="image-20220627172805858" src="UnityShader.assets/image-20220627172805858.png" />   
+    
+$$
+c_{spscular} = (c_{light}·m_{specular} )max(0, \hat{v} · \hat{h})^{m_{gloss}}
+$$</p>
+<ul>
+<li>$m_{gloss}$ 就是材质<strong>光泽度（gloss）反光度（shininess）</strong> 用于控制高光区域的 “亮点”多宽。
+<ul>
+<li>$m_{gloss}$ 越大，亮点越小。</li>
+</ul>
+</li>
+<li>$m_{specular}$ 是材质的 高光反射颜色，用于控制 该材质 对于高光反射的强度和颜色。</li>
+<li>$c_{light}$ 是光源的颜色和强度。</li>
+<li>max函数防止 $\hat{v} · \hat{h}$ 结果负数。</li>
+</ul>
+<p>blinn-Phong的高光区域更大，更亮。</p>
+<p>
+        <img class="mx-auto" alt="image-20220627204157960" src="UnityShader.assets/image-20220627204157960.png" />   
+    </p>
+<p>
+        <img class="mx-auto" alt="image-20220627204231152" src="UnityShader.assets/image-20220627204231152.png" />   
+    </p>
+<h2 id="66-使用unity内置函数">6.6 使用Unity内置函数</h2>
+<ul>
+<li>之前 的写法例如 <code>normallize(_WorldSpaceLightPos0.xyz)</code>得到光源方向 <strong>只适用于 平行光</strong></li>
+<li>
+        <img class="mx-auto" alt="image-20220628104116664" src="UnityShader.assets/image-20220628104116664.png" />   
+    </li>
+<li>
+        <img class="mx-auto" alt="image-20220628104421085" src="UnityShader.assets/image-20220628104421085.png" />   
+    </li>
+<li><strong>WorldSpaceLightDir, UnityWorldSpaceLightDir, ObjSpaceLightDir</strong> 只用于前向渲染，且没被归一化</li>
+<li></li>
+</ul>
+<h1 id="第七章-基础纹理">第七章 基础纹理</h1>
+<ul>
+<li>纹理最初目的是，用一张图片控制模型的外观。</li>
+<li>**纹理映射（texture mapping）**可以把一张图，逐 **纹素（texel）**控制模型颜色。</li>
+<li>
+        <img class="mx-auto" alt="image-20220628173432431" src="UnityShader.assets/image-20220628173432431.png" />   
+    </li>
+</ul>
+<h2 id="71-单张纹理">7.1 单张纹理</h2>
+<h3 id="711-实践">7.1.1 实践</h3>
+<p>使用纹理：<code>Properties{ _Color(&quot;Color Tint&quot;, Color) = (1,1,1,1)  _MainTex(&quot;Main Tex&quot;, 2D) = &quot;white&quot;{}  }</code></p>
+<p>CG代码片段中，声明的时候：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c#" data-lang="c#">sample2D <span style="color:#ae81ff">_</span>MainTex;
+float4 <span style="color:#ae81ff">_</span>MainTex_ST;
+</code></pre></div><ul>
+<li>声明一个带 _ST的，使用 <strong>纹理名 _ST</strong> 声明纹理属性：S(scale)T(Transform)</li>
+<li>_ MainTex_ST.xy 是缩放值，_ MainTen_ST.zw 存的是偏移值</li>
+</ul>
+<p>
+        <img class="mx-auto" alt="image-20220629205324871" src="UnityShader.assets/image-20220629205324871.png" />   
+    </p>
+<p>
+        <img class="mx-auto" alt="image-20220629205830484" src="UnityShader.assets/image-20220629205830484.png" />   
+    </p>
+<h3 id="712-纹理的属性">7.1.2 纹理的属性</h3>
+
+        </div>
+
+        
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/lua%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">Lua基础知识</a></li>
+        
+        <li><a href="/post/lua%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">Lua性能测试</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='/tags/lua'>lua</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+    
+    
+
+</div>
+
+                    <footer id="footer">
+    <div>
+        &copy; 2022 <a href="https://qpalzm811.github.io/">qpalzm811 blog By qpalzm811 blog</a>
+        
+    </div>
+    <br />
+    <div>
+        <div class="github-badge">
+            <a href="https://gohugo.io/" target="_black" rel="nofollow"><span class="badge-subject">Powered by</span><span class="badge-value bg-blue">Hugo</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://www.flysnow.org/" target="_black"><span class="badge-subject">Design by</span><span class="badge-value bg-brightgreen">飞雪无情</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://github.com/flysnow-org/maupassant-hugo" target="_black"><span class="badge-subject">Theme</span><span class="badge-value bg-yellowgreen">Maupassant</span></a>
+        </div>
+    </div>
+</footer>
+
+
+    
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='//www.google.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://qpalzm811.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://qpalzm811.github.io/post/unityshader%E5%85%A5%E9%97%A8%E7%B2%BE%E8%A6%81/unityshader/" title="Unity入门精要笔记">Unity入门精要笔记</a>
+    </li>
+    
+    <li>
+        <a href="https://qpalzm811.github.io/post/lua%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" title="Lua基础知识">Lua基础知识</a>
+    </li>
+    
+    <li>
+        <a href="https://qpalzm811.github.io/post/lua%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/" title="Lua性能测试">Lua性能测试</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
+<ul class="widget-list">
+    
+    <li><a href="https://qpalzm811.github.io/categories/lua/">lua (3)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
+<div class="tagcloud">
+    
+    <a href="https://qpalzm811.github.io/tags/lua/">lua</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">友情链接</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="http://yuedu.baidu.com/ebook/14a722970740be1e640e9a3e" title="Android Gradle权威指南">Android Gradle权威指南</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="http://mirrors.flysnow.org/" title="常用开发工具CDN镜像">常用开发工具CDN镜像</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://qpalzm811.github.io/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
